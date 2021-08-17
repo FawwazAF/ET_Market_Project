@@ -1,8 +1,8 @@
 package main
 
 import (
-	"example/pawpi/config"
-	"example/pawpi/routes"
+	"etmarket/project/config"
+	"etmarket/project/routes"
 	"fmt"
 
 	"github.com/labstack/echo"
