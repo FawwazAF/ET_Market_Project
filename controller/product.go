@@ -18,6 +18,7 @@ import (
 // 	return true, userList
 // }
 
+// Get all product in a shop
 func GetAllProductInShop(c echo.Context) error {
 	// auth, userList := Authorized(c)
 	// if auth == false {
@@ -41,6 +42,7 @@ func GetAllProductInShop(c echo.Context) error {
 	})
 }
 
+// Get specific product in a shop
 func GetSpecificProductInShop(c echo.Context) error {
 	// auth, userList := Authorized(c)
 	// if auth == false {
