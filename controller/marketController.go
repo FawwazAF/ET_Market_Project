@@ -17,3 +17,14 @@ func GetAllMarket(c echo.Context) error {
 		"users":  markets,
 	})
 }
+
+func GetSpecificMarket(c echo.Context) error {
+	key := c.Param("market_name")
+	markets, err := database.SearchMarket(key)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"markets": markets,
+	})
+}
