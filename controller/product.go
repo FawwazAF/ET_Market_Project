@@ -64,3 +64,32 @@ func GetSpecificProductInShop(c echo.Context) error {
 		"data":    specificProduct,
 	})
 }
+
+func GetDetailSpecificProduct(c echo.Context) error {
+	// auth, userList := Authorized(c)
+	// if auth == false {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "Cannot access this account")
+	// }
+	shop_id, err := strconv.Atoi(c.Param("shop_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id shop",
+		})
+	}
+	product_id, err := strconv.Atoi(c.Param("product_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id product",
+		})
+	}
+	specificProduct, err := database.GetSpecificProductById(shop_id, product_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "no product in this shop",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "get product from this shop success",
+		"data":    specificProduct,
+	})
+}

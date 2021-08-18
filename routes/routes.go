@@ -10,9 +10,10 @@ import (
 
 func New(e *echo.Echo) {
 	//-------------------------Product----------------------------//
-	e.GET("/markets/shop/:shop_id", controller.GetAllProductInShop)
-	e.GET("/markets/shop/:shop_id/:product_name", controller.GetSpecificProductInShop)
-	e.GET("/shop/:shop_id/product/:product_id", controller.GetSpecificProduct)
+	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
+	e.GET("/shop/:shop_id/product/:product_name", controller.GetSpecificProductInShop)
+	e.GET("/shop/:shop_id/product/:product_id", controller.GetDetailSpecificProduct)
+
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
