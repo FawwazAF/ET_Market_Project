@@ -12,3 +12,12 @@ func GetManyMarkets() (interface{}, error) {
 	}
 	return markets, nil
 }
+
+func SearchMarket(key string) (interface{}, error) {
+	var markets []models.Market
+	search := ("%" + key + "%")
+	if err := config.DB.Find(&markets, "name LIKE ?", search).Error; err != nil {
+		return nil, err
+	}
+	return markets, nil
+}
