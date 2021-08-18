@@ -2,7 +2,6 @@ package config
 
 import (
 	"etmarket/project/models"
-	"os"
 	"strconv"
 
 	"gorm.io/driver/mysql"
@@ -13,9 +12,14 @@ var DB *gorm.DB
 var HTTP_PORT int
 
 func InitDb() {
-	connectionString := os.Getenv("CONNECTION_STRING")
 	var err error
-	DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	// connectionString := os.Getenv("CONNECTION_STRING")
+	// DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// InitMigrate()
+	DB, err = gorm.Open(mysql.Open("root:Minus12345@tcp(localhost:3306)/etmarket_schema?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +28,11 @@ func InitDb() {
 
 func InitPort() {
 	var err error
-	HTTP_PORT, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	// HTTP_PORT, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	HTTP_PORT, err = strconv.Atoi("8080")
 	if err != nil {
 		panic(err)
 	}
@@ -32,4 +40,5 @@ func InitPort() {
 
 func InitMigrate() {
 	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Market{})
 }
