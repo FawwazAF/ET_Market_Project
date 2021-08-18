@@ -52,7 +52,7 @@ func GetSpecificProductInShop(c echo.Context) error {
 			"message": "invalid id",
 		})
 	}
-	product_name := "shop_id"
+	product_name := c.Param("product_name")
 	specificProduct, err := database.GetSpecificProductByShopId(shop_id, product_name)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{

@@ -9,4 +9,8 @@ import (
 func New(e *echo.Echo) {
 	e.GET("/markets/shop/:shop_id", controller.GetAllProductInShop)
 	e.GET("/markets/shop/:shop_id/:product_name", controller.GetSpecificProductInShop)
+
+	//GET list data of all markets available
+	e.GET("/markets", controller.GetAllMarket)
+
 }
