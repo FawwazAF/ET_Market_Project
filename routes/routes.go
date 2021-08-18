@@ -11,8 +11,8 @@ import (
 func New(e *echo.Echo) {
 	//-------------------------Product----------------------------//
 	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
-	e.GET("/shop/:shop_id/product/:product_name", controller.GetSpecificProductInShop)
-	e.GET("/shop/:shop_id/product/:product_id", controller.GetDetailSpecificProduct)
+	e.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
+	e.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
 
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
