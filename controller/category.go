@@ -16,7 +16,7 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 			"message": "invalid market id",
 		})
 	}
-	allCategories, err := database.GetAllCategoriesMarketId(market_id)
+	all_shop, err := database.GetAllCategoriesMarketId(market_id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"message": "category is not found",
@@ -24,7 +24,7 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":    "success to get all food categories",
-		"categories": allCategories,
+		"categories": all_shop,
 	})
 }
 
@@ -37,7 +37,7 @@ func GetCategoryNameMarketIdController(c echo.Context) error {
 	}
 
 	category_name := c.Param("category_name")
-	selectedCategory, err := database.GetCategoryNameMarketId(market_id, category_name)
+	list_seller, err := database.GetCategoryNameMarketId(market_id, category_name)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "food category is not found",
@@ -45,6 +45,6 @@ func GetCategoryNameMarketIdController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":       "success to get a food category",
-		"category_name": selectedCategory,
+		"category_name": list_seller,
 	})
 }
