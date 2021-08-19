@@ -9,6 +9,17 @@ import (
 	"github.com/labstack/echo"
 )
 
+func GetAllCategories(c echo.Context) error {
+	categories, err := database.GetAllCategories()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  categories,
+	})
+}
+
 func GetAllCategoriesMarketIdController(c echo.Context) error {
 	market_id, err := strconv.Atoi(c.Param("market_id"))
 	if err != nil {

@@ -5,6 +5,14 @@ import (
 	"etmarket/project/models"
 )
 
+func GetAllCategories() (interface{}, error) {
+	var categories []models.Category
+	if err := config.DB.Find(&categories).Error; err != nil {
+		return nil, err
+	}
+	return categories, nil
+}
+
 func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 	var seller []models.Seller
 	if err := config.DB.Find(&seller, "market_id=?", market_id).Error; err != nil {
