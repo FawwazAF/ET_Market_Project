@@ -5,6 +5,7 @@ import (
 	"etmarket/project/models"
 	"log"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -73,5 +74,32 @@ func LoginCustomer(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "succes login as a customer",
 		"users":  data_customer,
+	})
+}
+
+func LogoutCustomer(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("customer_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id",
+		})
+	}
+	logout, err := database.GetCustomer(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
+	logout.Token = ""
+	c.Bind(&logout)
+	customer_updated, err := database.UpdateCustomer(logout)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot logout",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Logout success!",
+		"data":    customer_updated,
 	})
 }

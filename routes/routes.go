@@ -41,4 +41,12 @@ func New(e *echo.Echo) {
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 
+	//Customer
+	r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
+
+	//Seller
+	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)
+
+	//Driver
+	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
 }
