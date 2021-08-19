@@ -29,19 +29,25 @@ func New(e *echo.Echo) {
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
 	e.GET("/customer/:customer_id", controller.GetDetailCustomer)
+	e.PUT("/customer/:customer_id", controller.UpdateCustomer)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
 	e.POST("/driver/login", controller.LoginDriver)
 	e.GET("/driver/:driver_id", controller.GetDetailDriver)
+	e.PUT("/driver/:driver_id", controller.UpdateDriver)
 
 	//--------------------------Seller--------------------------//
 	e.POST("/seller/register", controller.RegisterSeller)
 	e.POST("/seller/login", controller.LoginSeller)
 	e.GET("/seller/:seller_id", controller.GetDetailSeller)
+	e.PUT("/seller/:seller_id", controller.UpdateSeller)
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
+
+	//--------------------------Customer--------------------------//
+	// r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
 
 }
