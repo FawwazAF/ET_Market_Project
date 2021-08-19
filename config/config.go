@@ -32,10 +32,11 @@ func InitPort() {
 }
 
 func InitMigrate() {
-	DB.AutoMigrate(&models.CategorySeller{})
 	DB.AutoMigrate(&models.Customer{})
 	DB.AutoMigrate(&models.Driver{})
 	DB.AutoMigrate(&models.Market{})
 	DB.AutoMigrate(&models.Seller{})
 	DB.AutoMigrate(&models.Product{})
+	DB.AutoMigrate(&models.Market{})
+	DB.AutoMigrate(&models.Category{})
 }
