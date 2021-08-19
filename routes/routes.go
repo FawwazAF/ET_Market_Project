@@ -9,6 +9,13 @@ import (
 )
 
 func New(e *echo.Echo) {
+	//-------------------------Market----------------------------//
+	e.GET("/markets", controller.GetAllMarket)
+	e.GET("/markets/:market_name", controller.GetSpecificMarket)
+
+	//-------------------------Category----------------------------//
+	e.GET("/categories", controller.GetAllCategories) //for register seller
+
 	//-------------------------Shop----------------------------//
 	e.GET("/markets/:market_id/shop", controller.GetAllCategoriesMarketIdController)
 	e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
@@ -32,10 +39,6 @@ func New(e *echo.Echo) {
 	e.POST("/seller/register", controller.RegisterSeller)
 	e.POST("/seller/login", controller.LoginSeller)
 	e.GET("/seller/:seller_id", controller.GetDetailSeller)
-
-	//GET list data of all markets available
-	e.GET("/markets", controller.GetAllMarket)
-	e.GET("/markets/:market_name", controller.GetSpecificMarket)
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")
