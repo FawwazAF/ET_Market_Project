@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	//main
+	//development
 	e := echo.New()
 	config.InitDb()
 	config.InitPort()

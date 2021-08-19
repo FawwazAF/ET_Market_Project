@@ -13,8 +13,8 @@ var DB *gorm.DB
 var HTTP_PORT int
 
 func InitDb() {
-	connectionString := os.Getenv("CONNECTION_STRING")
 	var err error
+	connectionString := os.Getenv("CONNECTION_STRING")
 	DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		panic(err)
