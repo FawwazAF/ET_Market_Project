@@ -25,6 +25,9 @@ func New(e *echo.Echo) {
 	//--------------------------Seller--------------------------//
 	e.POST("/seller/register", controller.RegisterSeller)
 	e.POST("/seller/login", controller.LoginSeller)
+	e.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	e.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	e.PUT("/seller/seller_id/products/product_id", controller.EditSellerProduct)
 
 	//GET list data of all markets available
 	e.GET("/markets", controller.GetAllMarket)
