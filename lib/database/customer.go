@@ -37,17 +37,12 @@ func GetPwd(email string) string {
 	return customer.Password
 }
 
-func CheckEmailOnCustomer(email string) bool {
-	var check bool
+func CheckEmailOnCustomer(email string) (interface{}, error) {
 	var customer models.Customer
 
-	config.DB.Model(&customer).Select("email").Where("email=?", email).First(&customer.Email)
-
-	if customer.Email == "" {
-		check = false
-	} else {
-		check = true
+	if err := config.DB.Model(&customer).Select("email").Where("email=?", email).First(&customer.Email).Error; err != nil {
+		return nil, err
 	}
 
-	return check
+	return customer, nil
 }
