@@ -30,17 +30,12 @@ func LoginDriver(email string) (interface{}, error) {
 	return driver, err
 }
 
-func CheckEmailOnDriver(email string) bool {
-	var check bool
+func CheckEmailOnDriver(email string) (interface{}, error) {
 	var driver models.Driver
 
-	config.DB.Model(&driver).Select("email").Where("email=?", email).First(&driver.Email)
-
-	if driver.Email == "" {
-		check = false
-	} else {
-		check = true
+	if err := config.DB.Model(&driver).Select("email").Where("email=?", email).First(&driver.Email).Error; err != nil {
+		return nil, err
 	}
 
-	return check
+	return driver, nil
 }
