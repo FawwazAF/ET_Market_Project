@@ -4,6 +4,7 @@ import (
 	"etmarket/project/lib/database"
 	"etmarket/project/models"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -63,5 +64,23 @@ func LoginSeller(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "succes login as a seller",
 		"users":  data_seller,
+	})
+}
+
+func GetDetailSeller(c echo.Context) error {
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid seller id",
+		})
+	}
+	data_seller, err := database.GetSellerById(seller_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "Cant find seller",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"customer": data_seller,
 	})
 }

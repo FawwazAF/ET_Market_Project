@@ -21,14 +21,17 @@ func New(e *echo.Echo) {
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
+	e.GET("/customer/:customer_id", controller.GetDetailCustomer)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
 	e.POST("/driver/login", controller.LoginDriver)
+	e.GET("/driver/:driver_id", controller.GetDetailDriver)
 
 	//--------------------------Seller--------------------------//
 	e.POST("/seller/register", controller.RegisterSeller)
 	e.POST("/seller/login", controller.LoginSeller)
+	e.GET("/seller/:seller_id", controller.GetDetailSeller)
 
 	//GET list data of all markets available
 	e.GET("/markets", controller.GetAllMarket)

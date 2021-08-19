@@ -39,3 +39,11 @@ func CheckEmailOnDriver(email string) (interface{}, error) {
 
 	return driver, nil
 }
+
+func GetDriverById(driver_id int) (interface{}, error) {
+	var driver models.Driver
+	if err := config.DB.Where("id=?", driver_id).First(&driver).Error; err != nil {
+		return nil, err
+	}
+	return driver, nil
+}

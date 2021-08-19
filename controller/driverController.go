@@ -4,6 +4,7 @@ import (
 	"etmarket/project/lib/database"
 	"etmarket/project/models"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -63,5 +64,23 @@ func LoginDriver(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "succes login as a driver",
 		"users":  data_driver,
+	})
+}
+
+func GetDetailDriver(c echo.Context) error {
+	driver_id, err := strconv.Atoi(c.Param("driver_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid driver id",
+		})
+	}
+	data_driver, err := database.GetDriverById(driver_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "Cant find driver",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"driver": data_driver,
 	})
 }

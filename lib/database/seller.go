@@ -44,3 +44,11 @@ func CheckEmailOnSeller(email string) bool {
 
 	return check
 }
+
+func GetSellerById(seller_id int) (interface{}, error) {
+	var seller models.Seller
+	if err := config.DB.Where("id=?", seller_id).First(&seller).Error; err != nil {
+		return nil, err
+	}
+	return seller, nil
+}
