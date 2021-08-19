@@ -75,3 +75,25 @@ func LoginCustomer(c echo.Context) error {
 		"users":  data_customer,
 	})
 }
+
+func GetAllPaymentMethod(c echo.Context) error {
+	payments, err := database.GetManyPayment()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  payments,
+	})
+}
+
+func GetAllDrivers(c echo.Context) error {
+	drivers, err := database.GetManyDrivers()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  drivers,
+	})
+}

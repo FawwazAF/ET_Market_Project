@@ -11,3 +11,8 @@ type Driver struct {
 	Gender   string `json:"gender" form:"gender" gorm:"type:enum('M', 'F')"`
 	Token    string `json:"token" form:"token"`
 }
+
+type ShowDriver struct {
+	ID   int
+	Name string
+}

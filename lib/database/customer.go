@@ -46,3 +46,20 @@ func CheckEmailOnCustomer(email string) (interface{}, error) {
 
 	return customer, nil
 }
+
+func GetManyPayment() (interface{}, error) {
+	var payments []models.Payment
+	if err := config.DB.Find(&payments).Error; err != nil {
+		return nil, err
+	}
+	return payments, nil
+}
+
+func GetManyDrivers() (interface{}, error) {
+	var drivers []models.Driver
+	if err := config.DB.Find(&drivers).Error; err != nil {
+		return drivers, err
+	}
+
+	return drivers, nil
+}
