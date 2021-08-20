@@ -21,7 +21,7 @@ func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 	return seller, nil
 }
 
-func GetCategoryNameMarketId(market_id int, category_name string) (interface{}, error) {
+func GetSellerbyName(market_id int, category_name string) (interface{}, error) {
 	var categories models.Category
 	var seller []models.Seller
 	search := "%" + category_name + "%"

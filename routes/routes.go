@@ -9,6 +9,7 @@ import (
 )
 
 func New(e *echo.Echo) {
+
 	//-------------------------Market----------------------------//
 	e.GET("/markets", controller.GetAllMarket)
 	e.GET("/markets/:market_name", controller.GetSpecificMarket)
@@ -44,6 +45,29 @@ func New(e *echo.Echo) {
 
 	//--------------------------Checkout--------------------------//
 	r.POST("/checkout", controller.CheckoutTransaction)
+	//--------------------------Customer--------------------------//
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
+
+	//--------------------------Seller--------------------------//
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)
+	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
+
+	//--------------------------Driver--------------------------//
+	r.GET("/driver/:driver_id", controller.GetDetailDriver)
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)
+
+	//-------------------------Cart----------------------------//
+	r.POST("/shop/:shop_id/product/id/:product_id", controller.InsertProductIntoCartController)
+	r.GET("/cart", controller.GetProductInCartContorller)
+	r.DELETE("/cart/produtc/:product_id", controller.DeleteProductInCartsController)
+
+	//--------------------------Checkout--------------------------//
+	r.POST("/checkout", controller.CheckoutTransaction)
+
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
 	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
