@@ -87,5 +87,6 @@ func New(e *echo.Echo) {
 	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
 
 	r.GET("/driver/orderlist", controller.GetOrderList)
+	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
 
 }

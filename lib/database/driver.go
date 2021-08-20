@@ -57,6 +57,12 @@ func GetDriver(id int) (models.Driver, error) {
 	return driver, nil
 }
 
+func GetPwdDriver(email string) string {
+	var driver models.Driver
+	config.DB.Where("email = ?", email).First(&driver)
+	return driver.Password
+}
+
 //get email driver
 func GetEmailDriverById(driver_id int) (string, error) {
 	var driver models.Driver

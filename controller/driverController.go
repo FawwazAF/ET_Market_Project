@@ -47,7 +47,7 @@ func LoginDriver(c echo.Context) error {
 	c.Bind(&driver)
 
 	//compare password on form with db
-	get_pwd := database.GetPwd(driver.Email) //get password
+	get_pwd := database.GetPwdDriver(driver.Email) //get password
 	err := bcrypt.CompareHashAndPassword([]byte(get_pwd), []byte(driver.Password))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
