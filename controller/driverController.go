@@ -67,10 +67,6 @@ func LoginDriver(c echo.Context) error {
 	})
 }
 
-<<<<<<< HEAD
-func LogoutDriver(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("driver_id"))
-=======
 func GetDetailDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
@@ -91,15 +87,11 @@ func GetDetailDriver(c echo.Context) error {
 
 func UpdateDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
->>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
-<<<<<<< HEAD
-	logout, err := database.GetDriver(id)
-=======
 
 	email_driver, err := database.GetEmailDriverById(driver_id)
 	if err != nil {
@@ -109,25 +101,11 @@ func UpdateDriver(c echo.Context) error {
 	}
 
 	driver, err := database.GetDriver(driver_id)
->>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
 		})
 	}
-<<<<<<< HEAD
-	logout.Token = ""
-	c.Bind(&logout)
-	driver_updated, err := database.UpdateDriver(logout)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "cannot logout",
-		})
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Logout success!",
-		"data":    driver_updated,
-=======
 	c.Bind(&driver)
 
 	if driver.Email != email_driver {
@@ -154,6 +132,32 @@ func UpdateDriver(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":     "success update driver",
 		"data driver": updated_driver,
->>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
+	})
+}
+
+func LogoutDriver(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("driver_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id",
+		})
+	}
+	logout, err := database.GetDriver(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
+	logout.Token = ""
+	c.Bind(&logout)
+	driver_updated, err := database.UpdateDriver(logout)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot logout",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Logout success!",
+		"data":    driver_updated,
 	})
 }
