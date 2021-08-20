@@ -86,7 +86,17 @@ func GetCustomerById(customer_id int) (interface{}, error) {
 	if err := config.DB.Where("id=?", customer_id).First(&customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"id":     customer.ID,
+		"email":  customer.Email,
+		"name":   customer.Name,
+		"alamat": customer.Address,
+		"gender": customer.Gender,
+	}
+
+	return output, nil
 }
 
 /*
@@ -126,6 +136,7 @@ func UpdateCustomer(customer models.Customer) (interface{}, error) {
 
 	//set output data
 	output := map[string]interface{}{
+		"id":     customer.ID,
 		"name":   customer.Name,
 		"email":  customer.Email,
 		"alamat": customer.Address,
