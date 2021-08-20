@@ -21,19 +21,6 @@ func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 	return seller, nil
 }
 
-func GetSellerbyName(market_id int, category_name string) (interface{}, error) {
-	var categories models.Category
-	var seller []models.Seller
-	search := "%" + category_name + "%"
-	if err := config.DB.Find(&categories, "name LIKE ?", search).Error; err != nil {
-		return nil, err
-	}
-	if err := config.DB.Find(&seller, "market_id=? AND category_id=?", market_id, categories.ID).Error; err != nil {
-		return nil, err
-	}
-	return seller, nil
-}
-
 func GetCategoryNameMarketId(market_id int, category_name string) (interface{}, error) {
 	var categories models.Category
 	var seller []models.Seller
