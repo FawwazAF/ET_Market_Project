@@ -10,9 +10,26 @@ import (
 
 func New(e *echo.Echo) {
 
+	//-------------------------Market----------------------------//
+	e.GET("/markets", controller.GetAllMarket)
+	e.GET("/markets/:market_name", controller.GetSpecificMarket)
+
+	//-------------------------Category----------------------------//
+	e.GET("/categories", controller.GetAllCategories) //for register seller
+
+	//-------------------------Shop----------------------------//
+	e.GET("/markets/:market_id/shop", controller.GetAllCategoriesMarketIdController)
+	e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
+
+	//-------------------------Product----------------------------//
+	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
+	e.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
+	e.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
+
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
+	e.GET("/payments", controller.GetAllPaymentMethod)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
@@ -26,24 +43,47 @@ func New(e *echo.Echo) {
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 
-	//-------------------------Market----------------------------//
-	r.GET("/markets", controller.GetAllMarket)
-	r.GET("/markets/:market_name", controller.GetSpecificMarket)
+	//--------------------------Checkout--------------------------//
+	r.POST("/checkout", controller.CheckoutTransaction)
+	//--------------------------Customer--------------------------//
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
 
-	//-------------------------Category----------------------------//
-	r.GET("/categories", controller.GetAllCategories) //for register seller
+	//--------------------------Seller--------------------------//
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)
+	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
 
-	//-------------------------Shop----------------------------//
-	r.GET("/markets/:market_id/sellers", controller.GetAllCategoriesMarketIdController)
-	r.GET("/markets/:market_id/sellers/:category_name", controller.GetSellerController)
-
-	//-------------------------Product----------------------------//
-	r.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
-	r.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
-	r.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
+	//--------------------------Driver--------------------------//
+	r.GET("/driver/:driver_id", controller.GetDetailDriver)
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)
 
 	//-------------------------Cart----------------------------//
 	r.POST("/shop/:shop_id/product/id/:product_id", controller.InsertProductIntoCartController)
 	r.GET("/cart", controller.GetProductInCartContorller)
 	r.DELETE("/cart/produtc/:product_id", controller.DeleteProductInCartsController)
+
+	//--------------------------Checkout--------------------------//
+	r.POST("/checkout", controller.CheckoutTransaction)
+
+	//--------------------------Customer--------------------------//
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
+
+	//--------------------------Seller--------------------------//
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)
+	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
+
+	//--------------------------Driver--------------------------//
+	r.GET("/driver/:driver_id", controller.GetDetailDriver)
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)
+
+	//--------------------------Customer--------------------------//
+	// r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
+
 }

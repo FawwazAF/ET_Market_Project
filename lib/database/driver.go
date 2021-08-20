@@ -39,3 +39,39 @@ func CheckEmailOnDriver(email string) (interface{}, error) {
 
 	return driver, nil
 }
+
+func GetDriverById(driver_id int) (interface{}, error) {
+	var driver models.Driver
+	if err := config.DB.Where("id=?", driver_id).First(&driver).Error; err != nil {
+		return nil, err
+	}
+	return driver, nil
+}
+
+//get 1 specified driver with Driver struct output
+func GetDriver(id int) (models.Driver, error) {
+	var driver models.Driver
+	if err := config.DB.Find(&driver, "id=?", id).Error; err != nil {
+		return driver, err
+	}
+	return driver, nil
+}
+
+//get email driver
+func GetEmailDriverById(driver_id int) (string, error) {
+	var driver models.Driver
+
+	if err := config.DB.Model(&driver).Select("email").Where("id=?", driver_id).First(&driver.Email).Error; err != nil {
+		return "nil", err
+	}
+
+	return driver.Email, nil
+}
+
+//update driver info from database
+func UpdateDriver(driver models.Driver) (interface{}, error) {
+	if err := config.DB.Save(&driver).Error; err != nil {
+		return nil, err
+	}
+	return driver, nil
+}
