@@ -110,7 +110,7 @@ func GetDetailSeller(c echo.Context) error {
 	data_seller, err := database.GetSellerById(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "Cant find seller",
+			"message": "Cannot find seller",
 		})
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -183,17 +183,21 @@ func UpdateSeller(c echo.Context) error {
 	})
 }
 
+// Ihsan
 func GetSellerProducts(c echo.Context) error {
-	// auth, userList := Authorized(c)
-	// if auth == false {
-	// 	return echo.NewHTTPError(http.StatusUnauthorized, "Cannot access this account")
-	// }
+	// convert parameter to variable
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid seller id",
 		})
 	}
+	// Auth
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+	// Get data
 	all_products_selected_seller, err := database.GetAllSellerProduct(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
@@ -206,17 +210,25 @@ func GetSellerProducts(c echo.Context) error {
 	})
 }
 
+// Ihsan
 func AddProductToSeller(c echo.Context) error {
+	// Convert parameter to variable
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
+	// Auth
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+	// http request body
 	product := models.Product{}
 	product.SellerID = uint(seller_id)
 	c.Bind(&product)
-
+	// Add data from request
 	product_added, err := database.AddProductToSeller(product)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -229,12 +241,18 @@ func AddProductToSeller(c echo.Context) error {
 	})
 }
 
+// ihsan
 func EditSellerProduct(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid seller id",
 		})
+	}
+
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
 	}
 
 	product_id, err := strconv.Atoi(c.Param("product_id"))

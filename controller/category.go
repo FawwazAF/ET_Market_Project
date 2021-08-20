@@ -20,6 +20,10 @@ func GetAllCategories(c echo.Context) error {
 	})
 }
 
+/*
+Author: Patmiza
+Getting all categories of seller in a market
+*/
 func GetAllCategoriesMarketIdController(c echo.Context) error {
 	market_id, err := strconv.Atoi(c.Param("market_id"))
 	if err != nil {
@@ -60,6 +64,10 @@ func GetSellerController(c echo.Context) error {
 	})
 }
 
+/*
+Author: Patmiza
+Getting all sellers or shops in a market by category
+*/
 func GetCategoryNameMarketIdController(c echo.Context) error {
 	market_id, err := strconv.Atoi(c.Param("market_id"))
 	if err != nil {
@@ -72,11 +80,11 @@ func GetCategoryNameMarketIdController(c echo.Context) error {
 	list_seller, err := database.GetCategoryNameMarketId(market_id, category_name)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "food category is not found",
+			"message": "seller category is not found",
 		})
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":       "success to get a food category",
+		"message":       "success to get a seller category",
 		"category_name": list_seller,
 	})
 }
