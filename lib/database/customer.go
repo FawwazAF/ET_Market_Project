@@ -133,8 +133,6 @@ func UpdateCustomer(customer models.Customer) (interface{}, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
 		return nil, err
 	}
-
-	return customer, nil
 	//set output data
 	output := map[string]interface{}{
 		"id":     customer.ID,
