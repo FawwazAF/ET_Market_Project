@@ -30,6 +30,16 @@ func LoginDriver(email string) (interface{}, error) {
 	return driver, err
 }
 
+/*
+Author: Riska
+This function for search password user by email
+*/
+func GetPwdDriver(email string) string {
+	var driver models.Driver
+	config.DB.Where("email = ?", email).First(&driver)
+	return driver.Password
+}
+
 func CheckEmailOnDriver(email string) (interface{}, error) {
 	var driver models.Driver
 
