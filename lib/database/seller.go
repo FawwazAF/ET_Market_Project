@@ -142,6 +142,19 @@ func EditSellerProduct(product_id int, seller_id int, product models.Product) (m
 	return product, nil
 }
 
+func GetSellerbyName(market_id int, category_name string) (interface{}, error) {
+	var categories models.Category
+	var seller []models.Seller
+	search := "%" + category_name + "%"
+	if err := config.DB.Find(&categories, "name LIKE ?", search).Error; err != nil {
+		return nil, err
+	}
+	if err := config.DB.Find(&seller, "market_id=? AND category_id=?", market_id, categories.ID).Error; err != nil {
+		return nil, err
+	}
+	return seller, nil
+}
+
 /*
 Author: Riska
 This function for get seller id

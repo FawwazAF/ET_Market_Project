@@ -150,3 +150,30 @@ func UpdateDriver(c echo.Context) error {
 		"data driver": updated_driver,
 	})
 }
+
+func LogoutDriver(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("driver_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id",
+		})
+	}
+	logout, err := database.GetDriver(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
+	logout.Token = ""
+	c.Bind(&logout)
+	driver_updated, err := database.UpdateDriver(logout)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot logout",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Logout success!",
+		"data":    driver_updated,
+	})
+}

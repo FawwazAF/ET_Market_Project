@@ -14,7 +14,7 @@ func InsertProductIntoCartController(c echo.Context) error {
 	logged_in_user_id := middlewares.ExtractToken(c)
 
 	// checking shop id
-	shop_id, err := strconv.Atoi(c.Param("shop_id"))
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid customer id",
@@ -33,7 +33,7 @@ func InsertProductIntoCartController(c echo.Context) error {
 	c.Bind(&carts)
 
 	// insert product into cart
-	new_cart, err := database.InsertProductIntoCart(logged_in_user_id, shop_id, product_id, carts)
+	new_cart, err := database.InsertProductIntoCart(logged_in_user_id, seller_id, product_id, carts)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "cart is not found",

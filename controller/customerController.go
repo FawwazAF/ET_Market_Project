@@ -2,6 +2,7 @@ package controller
 
 import (
 	"etmarket/project/lib/database"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"log"
 	"net/http"
@@ -111,6 +112,14 @@ func GetDetailCustomer(c echo.Context) error {
 			"message": "invalid customer id",
 		})
 	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != customer_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+
+	//get customer by id
 	data_customer, err := database.GetCustomerById(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -132,6 +141,12 @@ func UpdateCustomer(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
+	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != customer_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
 	}
 
 	email_customer, err := database.GetEmailCustomerById(customer_id)
@@ -173,5 +188,32 @@ func UpdateCustomer(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":       "success update customer",
 		"data customer": updated_customer,
+	})
+}
+
+func LogoutCustomer(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("customer_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id",
+		})
+	}
+	logout, err := database.GetCustomer(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
+	logout.Token = ""
+	c.Bind(&logout)
+	customer_updated, err := database.UpdateCustomer(logout)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot logout",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Logout success!",
+		"data":    customer_updated,
 	})
 }
