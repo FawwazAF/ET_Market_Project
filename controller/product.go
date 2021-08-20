@@ -96,7 +96,7 @@ func GetDetailSpecificProduct(c echo.Context) error {
 	})
 }
 
-func GetProductInCartContorller(c echo.Context) error {
+func GetProductInCartController(c echo.Context) error {
 
 	products, err := database.GetProductInCart()
 	if err != nil {
