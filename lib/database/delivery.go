@@ -52,6 +52,8 @@ func GetSelectedOrder(checkout_id int) (interface{}, error) {
 		return nil, err
 	}
 	return order, nil
+}
+
 /*
 Author: Patmiza
 */
