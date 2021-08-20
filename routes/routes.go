@@ -85,4 +85,7 @@ func New(e *echo.Echo) {
 	r.GET("/driver/:driver_id", controller.GetDetailDriver)
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)
 	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
+
+	r.GET("/driver/orderlist", controller.GetOrderList)
+
 }
