@@ -77,6 +77,17 @@ func LoginCustomer(c echo.Context) error {
 	})
 }
 
+func GetAllPaymentMethod(c echo.Context) error {
+	payments, err := database.GetManyPayment()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  payments,
+	})
+}
+
 func GetDetailCustomer(c echo.Context) error {
 	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {

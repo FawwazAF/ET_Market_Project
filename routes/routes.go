@@ -28,6 +28,7 @@ func New(e *echo.Echo) {
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
+	e.GET("/payments", controller.GetAllPaymentMethod)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
@@ -41,6 +42,8 @@ func New(e *echo.Echo) {
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 
+	//--------------------------Checkout--------------------------//
+	r.POST("/checkout", controller.CheckoutTransaction)
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
 	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
