@@ -96,7 +96,16 @@ func GetSellerById(seller_id int) (interface{}, error) {
 	if err := config.DB.Where("id=?", seller_id).First(&seller).Error; err != nil {
 		return nil, err
 	}
-	return seller, nil
+	//set output data
+	output := map[string]interface{}{
+		"id":     seller.ID,
+		"email":  seller.Email,
+		"name":   seller.Name,
+		"alamat": seller.Address,
+		"gender": seller.Gender,
+	}
+
+	return output, nil
 }
 
 /*

@@ -85,7 +85,6 @@ func New(e *echo.Echo) {
 	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)          //Riska
 
 	//--------------------------Driver--------------------------//
-<<<<<<< HEAD
 	r.GET("/driver/:driver_id", controller.GetDetailDriver)
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)
 	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
@@ -93,10 +92,5 @@ func New(e *echo.Echo) {
 	r.GET("/driver/orderlist", controller.GetOrderList)
 	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
 	r.PUT("/driver/orderlist/:checkout_id", controller.FinishedDelivery)
-=======
-	r.GET("/driver/:driver_id", controller.GetDetailDriver)     //Riska
-	r.PUT("/driver/:driver_id", controller.UpdateDriver)        //Riska
-	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver) //Riska
->>>>>>> c2a66d03f247b198eaa9fd59e5166f9b5761bcff
 
 }
