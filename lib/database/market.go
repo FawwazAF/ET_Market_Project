@@ -5,19 +5,19 @@ import (
 	"etmarket/project/models"
 )
 
-func GetManyMarkets() (interface{}, error) {
+func GetManyMarkets() ([]models.Market, error) {
 	var markets []models.Market
 	if err := config.DB.Find(&markets).Error; err != nil {
-		return nil, err
+		return markets, err
 	}
 	return markets, nil
 }
 
-func SearchMarket(key string) (interface{}, error) {
+func SearchMarket(key string) ([]models.Market, error) {
 	var markets []models.Market
 	search := ("%" + key + "%")
 	if err := config.DB.Find(&markets, "name LIKE ?", search).Error; err != nil {
-		return nil, err
+		return markets, err
 	}
 	return markets, nil
 }

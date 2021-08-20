@@ -5,42 +5,43 @@ import (
 	"etmarket/project/models"
 )
 
-func GetOrdertoTake() (interface{}, error) {
+func GetOrdertoTake() ([]models.Checkout, error) {
 	var checkouts []models.Checkout
 	if err := config.DB.Find(&checkouts, "status=?", "searching").Error; err != nil {
-		return nil, err
+		return checkouts, err
 	}
 	return checkouts, nil
 }
 
-func MakeDelivery(driver_id, checkout_id int) (interface{}, error) {
+func MakeDelivery(driver_id, checkout_id int) (models.Delivery, error) {
 	var checkout models.Checkout
 	var driver models.Driver
+	var delivery models.Delivery
 	if err := config.DB.Find(&checkout, "id=?", checkout_id).Error; err != nil {
-		return nil, err
+		return delivery, err
 	}
 	if err := config.DB.Find(&driver, "id=?", driver_id).Error; err != nil {
-		return nil, err
+		return delivery, err
 	}
-	delivery := models.Delivery{
+	delivery = models.Delivery{
 		DriverID:   uint(driver_id),
 		CheckoutID: uint(checkout_id),
 		Status:     "progress",
 	}
 	if err := config.DB.Save(&delivery).Error; err != nil {
-		return nil, err
+		return delivery, err
 	}
 	return delivery, nil
 }
 
-func EditDelivery(driver_id, checkout_id int) (interface{}, error) {
+func EditDelivery(driver_id, checkout_id int) (models.Delivery, error) {
 	var delivery models.Delivery
 	if err := config.DB.Find(&delivery, "driver_id=? AND checkout_id=?", driver_id, checkout_id).Error; err != nil {
-		return nil, err
+		return delivery, err
 	}
 	delivery.Status = "completed"
 	if err := config.DB.Save(delivery).Error; err != nil {
-		return nil, err
+		return delivery, err
 	}
 	return delivery, nil
 }

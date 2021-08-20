@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo"
 )
 
+//Fawwaz
+//List of Order to take
 func GetOrderList(c echo.Context) error {
 	logged_driver_id := middlewares.ExtractToken(c)
 	if logged_driver_id == 0 {
@@ -20,12 +22,11 @@ func GetOrderList(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  markets,
-	})
+	return c.JSON(http.StatusOK, markets)
 }
 
+//Fawwaz
+//Take Order
 func TakeCheckout(c echo.Context) error {
 	//Login
 	logged_driver_id := middlewares.ExtractToken(c)
@@ -49,12 +50,11 @@ func TakeCheckout(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  delivery,
-	})
+	return c.JSON(http.StatusOK, delivery)
 }
 
+//Fawwaz
+//Update status after finishing the delivery
 func FinishedDelivery(c echo.Context) error {
 	logged_driver_id := middlewares.ExtractToken(c)
 	if logged_driver_id == 0 {
@@ -73,8 +73,5 @@ func FinishedDelivery(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  delivery,
-	})
+	return c.JSON(http.StatusOK, delivery)
 }

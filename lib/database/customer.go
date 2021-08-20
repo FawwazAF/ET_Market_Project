@@ -77,14 +77,6 @@ func CheckEmailOnCustomer(email string) (interface{}, error) {
 	return customer, nil
 }
 
-func GetManyPayment() (interface{}, error) {
-	var payments []models.Payment
-	if err := config.DB.Find(&payments).Error; err != nil {
-		return nil, err
-	}
-	return payments, nil
-}
-
 /*
 Author: Riska
 This function for get 1 specified customer with interface output

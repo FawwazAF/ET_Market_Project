@@ -9,6 +9,18 @@ import (
 	"github.com/labstack/echo"
 )
 
+//Fawwaz
+//Get list all payment method before checkout
+func GetAllPaymentMethod(c echo.Context) error {
+	payments, err := database.GetManyPayment()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, payments)
+}
+
+//Fawwaz
+//Make a checkout
 func CheckoutTransaction(c echo.Context) error {
 
 	var checkout models.Checkout
@@ -42,8 +54,5 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":   "success",
-		"checkout": new_checkout,
-	})
+	return c.JSON(http.StatusOK, new_checkout)
 }

@@ -14,10 +14,7 @@ func GetAllMarket(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  markets,
-	})
+	return c.JSON(http.StatusOK, markets)
 }
 
 //Fawwaz
@@ -28,7 +25,5 @@ func GetSpecificMarket(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"markets": markets,
-	})
+	return c.JSON(http.StatusOK, markets)
 }
