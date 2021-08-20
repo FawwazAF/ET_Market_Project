@@ -137,6 +137,7 @@ func UpdateDriver(driver models.Driver) (interface{}, error) {
 
 	//set output data
 	output := map[string]interface{}{
+		"id":     driver.ID,
 		"name":   driver.Name,
 		"email":  driver.Email,
 		"alamat": driver.Address,

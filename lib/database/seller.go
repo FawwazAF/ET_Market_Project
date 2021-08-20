@@ -145,6 +145,7 @@ func UpdateSeller(seller models.Seller) (interface{}, error) {
 
 	//set output data
 	output := map[string]interface{}{
+		"id":     seller.ID,
 		"name":   seller.Name,
 		"email":  seller.Email,
 		"alamat": seller.Address,

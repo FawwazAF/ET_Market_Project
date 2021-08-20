@@ -144,6 +144,7 @@ func UpdateCustomer(customer models.Customer) (interface{}, error) {
 
 	//set output data
 	output := map[string]interface{}{
+		"id":     customer.ID,
 		"name":   customer.Name,
 		"email":  customer.Email,
 		"alamat": customer.Address,
