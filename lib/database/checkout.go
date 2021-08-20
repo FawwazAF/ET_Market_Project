@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"etmarket/project/config"
 	"etmarket/project/models"
 )
@@ -18,6 +19,9 @@ func CartMigrate(id, checkout_id int) error {
 	var order models.Order
 	if err := config.DB.Find(&carts, "customer_id=?", id).Error; err != nil {
 		return err
+	}
+	if len(carts) == 0 {
+		return errors.New("cart is empty")
 	}
 
 	//iterative save from cart to order

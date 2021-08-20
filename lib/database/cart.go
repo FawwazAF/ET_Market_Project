@@ -18,8 +18,8 @@ func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.
 	cart := models.Cart{
 		CustomerID: uint(customer_id),
 		ProductID:  uint(product_id),
-		Price:      product.Price,
 		Qty:        carts.Qty,
+		Price:      (product.Price * carts.Qty),
 	}
 	if err := config.DB.Save(&cart).Error; err != nil {
 		return nil, err
