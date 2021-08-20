@@ -46,21 +46,6 @@ func New(e *echo.Echo) {
 	//--------------------------Checkout--------------------------//
 	r.POST("/checkout", controller.CheckoutTransaction)
 
-	//--------------------------Customer--------------------------//
-	r.GET("/customer/:customer_id", controller.GetDetailCustomer) //Riska
-	r.PUT("/customer/:customer_id", controller.UpdateCustomer)    //Riska
-
-	//--------------------------Seller--------------------------//
-	r.GET("/seller/:seller_id", controller.GetDetailSeller) //Riska
-	r.PUT("/seller/:seller_id", controller.UpdateSeller)    //Riska
-	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
-	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
-	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
-
-	//--------------------------Driver--------------------------//
-	r.GET("/driver/:driver_id", controller.GetDetailDriver) //Riska
-	r.PUT("/driver/:driver_id", controller.UpdateDriver)    //Riska
-
 	//-------------------------Cart----------------------------//
 	r.POST("/seller/:seller_id/product/id/:product_id", controller.InsertProductIntoCartController)
 	r.GET("/cart", controller.GetAllCartsController)
