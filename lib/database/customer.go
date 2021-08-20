@@ -6,14 +6,29 @@ import (
 	"etmarket/project/models"
 )
 
+/*
+Author: Riska
+This function for register customer
+*/
 func CreateCustomer(customer models.Customer) (interface{}, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    customer.ID,
+		"email": customer.Email,
+		"name":  customer.Name,
+	}
+
+	return output, nil
 }
 
-//login customer with matching data from database
+/*
+Author: Riska
+This function for login customer with matching data from database
+*/
 func LoginCustomer(email string) (interface{}, error) {
 	var customer models.Customer
 	var err error
@@ -27,16 +42,31 @@ func LoginCustomer(email string) (interface{}, error) {
 	if err := config.DB.Save(customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, err
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    customer.ID,
+		"email": customer.Email,
+		"token": customer.Token,
+	}
+
+	return output, nil
 }
 
-//search password user by email
-func GetPwd(email string) string {
+/*
+Author: Riska
+This function for search password user by email
+*/
+func GetPwdCustomer(email string) string {
 	var customer models.Customer
 	config.DB.Where("email = ?", email).First(&customer)
 	return customer.Password
 }
 
+/*
+Author: Riska
+This function for check is email customer exists
+*/
 func CheckEmailOnCustomer(email string) (interface{}, error) {
 	var customer models.Customer
 
@@ -55,6 +85,10 @@ func GetManyPayment() (interface{}, error) {
 	return payments, nil
 }
 
+/*
+Author: Riska
+This function for get 1 specified customer with interface output
+*/
 func GetCustomerById(customer_id int) (interface{}, error) {
 	var customer models.Customer
 	if err := config.DB.Where("id=?", customer_id).First(&customer).Error; err != nil {
@@ -63,7 +97,10 @@ func GetCustomerById(customer_id int) (interface{}, error) {
 	return customer, nil
 }
 
-//get 1 specified customer with Customer struct output
+/*
+Author: Riska
+This function for get 1 specified customer with Customer struct output
+*/
 func GetCustomer(id int) (models.Customer, error) {
 	var customer models.Customer
 	if err := config.DB.Find(&customer, "id=?", id).Error; err != nil {
@@ -72,7 +109,10 @@ func GetCustomer(id int) (models.Customer, error) {
 	return customer, nil
 }
 
-//get email customer
+/*
+Author: Riska
+This function for get email customer
+*/
 func GetEmailCustomerById(customer_id int) (string, error) {
 	var customer models.Customer
 
@@ -83,10 +123,22 @@ func GetEmailCustomerById(customer_id int) (string, error) {
 	return customer.Email, nil
 }
 
-//update customer info from database
+/*
+Author: Riska
+This function for update customer info from database
+*/
 func UpdateCustomer(customer models.Customer) (interface{}, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"name":   customer.Name,
+		"email":  customer.Email,
+		"alamat": customer.Address,
+		"gender": customer.Gender,
+	}
+
+	return output, nil
 }

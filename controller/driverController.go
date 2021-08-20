@@ -2,6 +2,7 @@ package controller
 
 import (
 	"etmarket/project/lib/database"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"net/http"
 	"strconv"
@@ -11,6 +12,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Riska
+This function for register driver
+*/
 func RegisterDriver(c echo.Context) error {
 	//get user's input
 	driver := models.Driver{}
@@ -41,6 +46,10 @@ func RegisterDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for login driver
+*/
 func LoginDriver(c echo.Context) error {
 	//get user's input
 	driver := models.Driver{}
@@ -67,6 +76,10 @@ func LoginDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for get profile driver
+*/
 func GetDetailDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
@@ -74,6 +87,13 @@ func GetDetailDriver(c echo.Context) error {
 			"message": "invalid driver id",
 		})
 	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != driver_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+
 	data_driver, err := database.GetDriverById(driver_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -85,12 +105,22 @@ func GetDetailDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for edit profile driver
+*/
 func UpdateDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
+	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != driver_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
 	}
 
 	email_driver, err := database.GetEmailDriverById(driver_id)
@@ -135,6 +165,10 @@ func UpdateDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for logout driver
+*/
 func LogoutDriver(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {

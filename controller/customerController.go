@@ -2,6 +2,7 @@ package controller
 
 import (
 	"etmarket/project/lib/database"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"log"
 	"net/http"
@@ -12,6 +13,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Riska
+This function for encrypt password
+*/
 func EncryptPwd(pwd []byte) string {
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
 	if err != nil {
@@ -21,6 +26,10 @@ func EncryptPwd(pwd []byte) string {
 	return string(hash)
 }
 
+/*
+Author: Riska
+This function for register customer
+*/
 func RegisterCustomer(c echo.Context) error {
 	//get user's input
 	customer := models.Customer{}
@@ -51,13 +60,17 @@ func RegisterCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for login customer
+*/
 func LoginCustomer(c echo.Context) error {
 	//get user's input
 	customer := models.Customer{}
 	c.Bind(&customer)
 
 	//compare password on form with db
-	get_pwd := database.GetPwd(customer.Email) //get password
+	get_pwd := database.GetPwdCustomer(customer.Email) //get password
 	err := bcrypt.CompareHashAndPassword([]byte(get_pwd), []byte(customer.Password))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
@@ -88,6 +101,10 @@ func GetAllPaymentMethod(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for get profile customer
+*/
 func GetDetailCustomer(c echo.Context) error {
 	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {
@@ -95,6 +112,14 @@ func GetDetailCustomer(c echo.Context) error {
 			"message": "invalid customer id",
 		})
 	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != customer_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+
+	//get customer by id
 	data_customer, err := database.GetCustomerById(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -106,6 +131,10 @@ func GetDetailCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for edit profile customer
+*/
 func UpdateCustomer(c echo.Context) error {
 	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {
@@ -114,6 +143,13 @@ func UpdateCustomer(c echo.Context) error {
 		})
 	}
 
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != customer_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
+	}
+
+	//get email customer
 	email_customer, err := database.GetEmailCustomerById(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -121,6 +157,7 @@ func UpdateCustomer(c echo.Context) error {
 		})
 	}
 
+	//get customer
 	customer, err := database.GetCustomer(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -129,6 +166,7 @@ func UpdateCustomer(c echo.Context) error {
 	}
 	c.Bind(&customer)
 
+	//check email
 	if customer.Email != email_customer {
 		//check is email exists?
 		is_email_exists, _ := database.CheckEmailOnCustomer(customer.Email)
@@ -144,6 +182,7 @@ func UpdateCustomer(c echo.Context) error {
 	hashed_pwd := EncryptPwd(convert_pwd)
 	customer.Password = hashed_pwd //set new pass
 
+	//update data customer
 	updated_customer, err := database.UpdateCustomer(customer)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -156,6 +195,10 @@ func UpdateCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for logout customer
+*/
 func LogoutCustomer(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {
