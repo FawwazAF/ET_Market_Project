@@ -39,4 +39,11 @@ func InitMigrate() {
 	DB.AutoMigrate(&models.Product{})
 	DB.AutoMigrate(&models.Market{})
 	DB.AutoMigrate(&models.Category{})
+<<<<<<< HEAD
+=======
+	DB.AutoMigrate(&models.Cart{})
+	DB.AutoMigrate(&models.Checkout{})
+	DB.AutoMigrate(&models.Order{})
+	DB.AutoMigrate(&models.Delivery{})
+>>>>>>> 48353d70c37039491df3ae60b3ea01b095da5dc6
 }
