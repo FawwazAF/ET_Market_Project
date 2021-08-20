@@ -2,6 +2,7 @@ package config
 
 import (
 	"etmarket/project/models"
+	"os"
 	"strconv"
 
 	"gorm.io/driver/mysql"
@@ -13,8 +14,7 @@ var HTTP_PORT int
 
 func InitDb() {
 	var err error
-	// connectionString := os.Getenv("CONNECTION_STRING")
-	connectionString := "root:Minus12345@tcp(localhost:3306)/etmarket_schema?charset=utf8&parseTime=True&loc=Local"
+	connectionString := os.Getenv("CONNECTION_STRING")
 	DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -24,8 +24,7 @@ func InitDb() {
 
 func InitPort() {
 	var err error
-	// HTTP_PORT, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
-	HTTP_PORT, err = strconv.Atoi("8080")
+	HTTP_PORT, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
 	if err != nil {
 		panic(err)
 	}
