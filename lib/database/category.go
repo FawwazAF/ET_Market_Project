@@ -13,6 +13,9 @@ func GetAllCategories() (interface{}, error) {
 	return categories, nil
 }
 
+/*
+Author: Patmiza
+*/
 func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 	var seller []models.Seller
 	if err := config.DB.Find(&seller, "market_id=?", market_id).Error; err != nil {
@@ -21,6 +24,9 @@ func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 	return seller, nil
 }
 
+/*
+Author: Patmiza
+*/
 func GetCategoryNameMarketId(market_id int, category_name string) (interface{}, error) {
 	var categories models.Category
 	var seller []models.Seller
