@@ -90,17 +90,6 @@ func LoginCustomer(c echo.Context) error {
 	})
 }
 
-func GetAllPaymentMethod(c echo.Context) error {
-	payments, err := database.GetManyPayment()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  payments,
-	})
-}
-
 /*
 Author: Riska
 This function for get profile customer
