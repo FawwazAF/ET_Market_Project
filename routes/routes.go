@@ -86,9 +86,9 @@ func New(e *echo.Echo) {
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)
 	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
 
-	//--------------------------Delivery--------------------------// Patmiza
-	r.GET("/driver/history", controller.GetAllCompletedDeliveriesController)
+	//--------------------------Delivery--------------------------//
+	r.GET("/driver/history", controller.GetAllCompletedDeliveriesController) //patmiza
 
-	//--------------------------Order--------------------------// Patmiza
-	r.GET("/driver/history", controller.GetAllProgressOrdersController)
+	//--------------------------Order--------------------------//
+	r.GET("/driver/history", controller.GetAllProgressOrdersController) //patmiza
 }
