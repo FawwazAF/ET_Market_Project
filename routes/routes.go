@@ -19,7 +19,7 @@ func New(e *echo.Echo) {
 
 	//-------------------------Shop----------------------------//
 	e.GET("/markets/:market_id/shop", controller.GetAllCategoriesMarketIdController)
-	e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
+	// e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
 
 	//-------------------------Product----------------------------//
 	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
@@ -71,6 +71,7 @@ func New(e *echo.Echo) {
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
 	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
+	r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
 
 	//--------------------------Seller--------------------------//
 	r.GET("/seller/:seller_id", controller.GetDetailSeller)
@@ -78,12 +79,10 @@ func New(e *echo.Echo) {
 	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
 	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
 	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
+	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)
 
 	//--------------------------Driver--------------------------//
 	r.GET("/driver/:driver_id", controller.GetDetailDriver)
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)
-
-	//--------------------------Customer--------------------------//
-	// r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
-
+	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
 }
