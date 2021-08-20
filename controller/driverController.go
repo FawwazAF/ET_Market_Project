@@ -16,8 +16,8 @@ func RegisterDriver(c echo.Context) error {
 	c.Bind(&driver)
 
 	//check is email exists?
-	isEmailExists := database.CheckEmailOnDriver(driver.Email)
-	if isEmailExists {
+	is_email_exists, _ := database.CheckEmailOnDriver(driver.Email)
+	if is_email_exists != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "Email has already exist",
 		})

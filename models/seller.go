@@ -12,8 +12,8 @@ type Seller struct {
 	Token    string `json:"token" form:"token"`
 
 	// 1 to many with category seller and market
-	MarketID         uint `json:"market_id" form:"market_id"`
-	CategorySellerID uint `json:"category_seller_id" form:"category_seller_id"`
+	MarketID   uint `json:"market_id" form:"market_id"`
+	CategoryID uint `json:"category_id" form:"category_id"`
 
 	Product []Product `gorm:"foreignKey:SellerID;references:ID;constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION;"`
 }

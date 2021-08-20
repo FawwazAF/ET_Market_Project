@@ -26,8 +26,8 @@ func RegisterCustomer(c echo.Context) error {
 	c.Bind(&customer)
 
 	//check is email exists?
-	isEmailExists := database.CheckEmailOnCustomer(customer.Email)
-	if isEmailExists {
+	is_email_exists, _ := database.CheckEmailOnCustomer(customer.Email)
+	if is_email_exists != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "Email has already exist",
 		})
