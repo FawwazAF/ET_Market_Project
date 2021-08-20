@@ -8,6 +8,5 @@ type Product struct {
 	Price       int    `json:"price" form:"price"`
 	Stock       int    `json:"stock" form:"stock"`
 	Description string `json:"description" form:"address"`
-
-	SellerID uint `json:"seller_id" form:"seller_id"`
+	SellerID    uint   `json:"seller_id" form:"seller_id"`
 }

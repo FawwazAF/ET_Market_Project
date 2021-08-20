@@ -29,7 +29,6 @@ func New(e *echo.Echo) {
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
 	e.GET("/payments", controller.GetAllPaymentMethod)
-	e.GET("/drivers", controller.GetAllDrivers)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
@@ -45,5 +44,22 @@ func New(e *echo.Echo) {
 
 	//--------------------------Checkout--------------------------//
 	r.POST("/checkout", controller.CheckoutTransaction)
+	//--------------------------Customer--------------------------//
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
+
+	//--------------------------Seller--------------------------//
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)
+	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
+
+	//--------------------------Driver--------------------------//
+	r.GET("/driver/:driver_id", controller.GetDetailDriver)
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)
+
+	//--------------------------Customer--------------------------//
+	// r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
 
 }
