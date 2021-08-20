@@ -95,3 +95,15 @@ func GetDetailSpecificProduct(c echo.Context) error {
 		"data":    specific_product,
 	})
 }
+
+func GetProductInCartContorller(c echo.Context) error {
+
+	products, err := database.GetProductInCart()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get all products in cart ",
+		"user":    products,
+	})
+}

@@ -9,21 +9,6 @@ import (
 )
 
 func New(e *echo.Echo) {
-	//-------------------------Market----------------------------//
-	e.GET("/markets", controller.GetAllMarket)
-	e.GET("/markets/:market_name", controller.GetSpecificMarket)
-
-	//-------------------------Category----------------------------//
-	e.GET("/categories", controller.GetAllCategories) //for register seller
-
-	//-------------------------Shop----------------------------//
-	e.GET("/markets/:market_id/shop", controller.GetAllCategoriesMarketIdController)
-	e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
-
-	//-------------------------Product----------------------------//
-	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
-	e.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
-	e.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
 
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
@@ -41,4 +26,24 @@ func New(e *echo.Echo) {
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 
+	//-------------------------Market----------------------------//
+	r.GET("/markets", controller.GetAllMarket)
+	r.GET("/markets/:market_name", controller.GetSpecificMarket)
+
+	//-------------------------Category----------------------------//
+	r.GET("/categories", controller.GetAllCategories) //for register seller
+
+	//-------------------------Shop----------------------------//
+	r.GET("/markets/:market_id/sellers", controller.GetAllCategoriesMarketIdController)
+	r.GET("/markets/:market_id/sellers/:category_name", controller.GetSellerController)
+
+	//-------------------------Product----------------------------//
+	r.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
+	r.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
+	r.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
+
+	//-------------------------Cart----------------------------//
+	r.POST("/shop/:shop_id/product/id/:product_id", controller.InsertProductIntoCartController)
+	r.GET("/cart", controller.GetProductInCartContorller)
+	r.DELETE("/cart/produtc/:product_id", controller.DeleteProductInCartsController)
 }

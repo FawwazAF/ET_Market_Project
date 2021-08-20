@@ -29,3 +29,11 @@ func GetSpecificProductById(seller_id int, product_id int) (interface{}, error) 
 	}
 	return product, nil
 }
+
+func GetProductInCart() (interface{}, error) {
+	var carts []models.Cart
+	if err := config.DB.Find(&carts).Error; err != nil {
+		return nil, err
+	}
+	return carts, nil
+}
