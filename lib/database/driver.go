@@ -101,6 +101,7 @@ func GetDriver(id int) (models.Driver, error) {
 	return driver, nil
 }
 
+//get email driver
 /*
 Author: Riska
 This function for get email driver

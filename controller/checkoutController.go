@@ -21,7 +21,7 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if len(carts) == 0 {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "cart is empty",
 		})
 	}
