@@ -51,8 +51,9 @@ func CheckoutTransaction(c echo.Context) error {
 
 // Ihsan
 func GetCheckoutStatusInProgress(c echo.Context) error {
+	checkout_id_auth := middlewares.ExtractToken(c)
 	status := c.QueryParam("status")
-	in_progress_checkout, err := database.GetHistoryInProgress(status)
+	in_progress_checkout, err := database.GetHistoryInProgress(status, checkout_id_auth)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "request not found",
@@ -66,8 +67,9 @@ func GetCheckoutStatusInProgress(c echo.Context) error {
 
 // Ihsan
 func GetCheckoutStatusComplete(c echo.Context) error {
+	checkout_id_auth := middlewares.ExtractToken(c)
 	status := c.QueryParam("status")
-	in_complete_checkout, err := database.GetHistoryInProgress(status)
+	in_complete_checkout, err := database.GetHistoryInProgress(status, checkout_id_auth)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "request not found",
