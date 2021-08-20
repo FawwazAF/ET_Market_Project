@@ -98,4 +98,8 @@ func New(e *echo.Echo) {
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)        //Riska
 	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver) //Riska
 
+	r.GET("/driver/orderlist", controller.GetOrderList)
+	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
+	r.PUT("/driver/orderlist/:checkout_id", controller.FinishedDelivery)
+
 }
