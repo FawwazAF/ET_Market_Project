@@ -4,6 +4,7 @@ import (
 	"etmarket/project/lib/database"
 	"etmarket/project/middlewares"
 	"etmarket/project/models"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -54,5 +55,11 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	SendEmail(new_checkout.ID, logged_in_user_id)
 	return c.JSON(http.StatusOK, new_checkout)
+}
+
+func SendEmail(checkout_id uint, customer_id int) {
+	email_customer, _ := database.GetEmailCustomerById(customer_id)
+	fmt.Println(email_customer)
 }
