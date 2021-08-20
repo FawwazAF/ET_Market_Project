@@ -62,6 +62,28 @@ func GetSeller(id int) (models.Seller, error) {
 	return seller, nil
 }
 
+func GetAllSellerProduct(seller_id int) (interface{}, error) {
+	var product []models.Product
+	if err := config.DB.Find(&product, "seller_id = ?", seller_id).Error; err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
+func AddProductToSeller(product models.Product) (models.Product, error) {
+	if err := config.DB.Save(&product).Error; err != nil {
+		return product, err
+	}
+	return product, nil
+}
+
+func EditSellerProduct(product_id int, seller_id int, product models.Product) (models.Product, error) {
+	if err := config.DB.Where(&product, "id = ? AND seller_id = ?", product_id, seller_id).Save(&product).Error; err != nil {
+		return product, err
+	}
+	return product, nil
+}
+
 //get email seller
 func GetEmailSellerById(seller_id int) (string, error) {
 	var seller models.Seller
