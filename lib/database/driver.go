@@ -14,7 +14,15 @@ func CreateDriver(driver models.Driver) (interface{}, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
 		return nil, err
 	}
-	return driver, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    driver.ID,
+		"email": driver.Email,
+		"name":  driver.Name,
+	}
+
+	return output, nil
 }
 
 /*
@@ -34,7 +42,15 @@ func LoginDriver(email string) (interface{}, error) {
 	if err := config.DB.Save(driver).Error; err != nil {
 		return nil, err
 	}
-	return driver, err
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    driver.ID,
+		"email": driver.Email,
+		"token": driver.Token,
+	}
+
+	return output, nil
 }
 
 /*
@@ -107,5 +123,14 @@ func UpdateDriver(driver models.Driver) (interface{}, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
 		return nil, err
 	}
-	return driver, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"name":   driver.Name,
+		"email":  driver.Email,
+		"alamat": driver.Address,
+		"gender": driver.Gender,
+	}
+
+	return output, nil
 }

@@ -149,6 +149,7 @@ func UpdateCustomer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
 	}
 
+	//get email customer
 	email_customer, err := database.GetEmailCustomerById(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -156,6 +157,7 @@ func UpdateCustomer(c echo.Context) error {
 		})
 	}
 
+	//get customer
 	customer, err := database.GetCustomer(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -164,6 +166,7 @@ func UpdateCustomer(c echo.Context) error {
 	}
 	c.Bind(&customer)
 
+	//check email
 	if customer.Email != email_customer {
 		//check is email exists?
 		is_email_exists, _ := database.CheckEmailOnCustomer(customer.Email)
@@ -179,6 +182,7 @@ func UpdateCustomer(c echo.Context) error {
 	hashed_pwd := EncryptPwd(convert_pwd)
 	customer.Password = hashed_pwd //set new pass
 
+	//update data customer
 	updated_customer, err := database.UpdateCustomer(customer)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -191,6 +195,10 @@ func UpdateCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for logout customer
+*/
 func LogoutCustomer(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {

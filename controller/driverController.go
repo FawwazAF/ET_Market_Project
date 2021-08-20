@@ -2,6 +2,7 @@ package controller
 
 import (
 	"etmarket/project/lib/database"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"net/http"
 	"strconv"
@@ -86,6 +87,13 @@ func GetDetailDriver(c echo.Context) error {
 			"message": "invalid driver id",
 		})
 	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != driver_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+
 	data_driver, err := database.GetDriverById(driver_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -107,6 +115,12 @@ func UpdateDriver(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
+	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != driver_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
 	}
 
 	email_driver, err := database.GetEmailDriverById(driver_id)
@@ -151,6 +165,10 @@ func UpdateDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for logout driver
+*/
 func LogoutDriver(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {

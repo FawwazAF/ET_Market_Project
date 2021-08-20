@@ -92,12 +92,21 @@ Author: Riska
 This function for get profile seller
 */
 func GetDetailSeller(c echo.Context) error {
+	//convert id
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid seller id",
 		})
 	}
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
+	}
+
+	//get data seller
 	data_seller, err := database.GetSellerById(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -114,6 +123,7 @@ Author: Riska
 This function for edit profile seller
 */
 func UpdateSeller(c echo.Context) error {
+	//convert id
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -121,6 +131,13 @@ func UpdateSeller(c echo.Context) error {
 		})
 	}
 
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to update data")
+	}
+
+	//get email seller
 	email_seller, err := database.GetEmailSellerById(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -128,6 +145,7 @@ func UpdateSeller(c echo.Context) error {
 		})
 	}
 
+	//get seller
 	seller, err := database.GetSeller(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -136,6 +154,7 @@ func UpdateSeller(c echo.Context) error {
 	}
 	c.Bind(&seller)
 
+	//check email
 	if seller.Email != email_seller {
 		//check is email exists?
 		is_email_exists, _ := database.CheckEmailOnSeller(seller.Email)
@@ -151,6 +170,7 @@ func UpdateSeller(c echo.Context) error {
 	hashed_pwd := EncryptPwd(convert_pwd)
 	seller.Password = hashed_pwd //set new pass
 
+	//update data seller
 	updated_seller, err := database.UpdateSeller(seller)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -245,7 +265,6 @@ This function for get all order by seller id
 */
 func GetAllOrders(c echo.Context) error {
 	logged_in_user_id := middlewares.ExtractToken(c)
-
 	list_product, err := database.GetAllProductsOrderBySellerId(logged_in_user_id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -279,6 +298,7 @@ func EditStatusItemOrder(c echo.Context) error {
 		})
 	}
 
+	//check otorisasi
 	if logged_in_user_id != seller_id {
 		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized edit status order")
 	}
@@ -305,6 +325,10 @@ func EditStatusItemOrder(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for logout seller
+*/
 func LogoutSeller(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {

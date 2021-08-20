@@ -14,7 +14,15 @@ func CreateCustomer(customer models.Customer) (interface{}, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    customer.ID,
+		"email": customer.Email,
+		"name":  customer.Name,
+	}
+
+	return output, nil
 }
 
 /*
@@ -34,7 +42,15 @@ func LoginCustomer(email string) (interface{}, error) {
 	if err := config.DB.Save(customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, err
+
+	//set output data
+	output := map[string]interface{}{
+		"id":    customer.ID,
+		"email": customer.Email,
+		"token": customer.Token,
+	}
+
+	return output, nil
 }
 
 /*
@@ -115,5 +131,14 @@ func UpdateCustomer(customer models.Customer) (interface{}, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
 		return nil, err
 	}
-	return customer, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"name":   customer.Name,
+		"email":  customer.Email,
+		"alamat": customer.Address,
+		"gender": customer.Gender,
+	}
+
+	return output, nil
 }
