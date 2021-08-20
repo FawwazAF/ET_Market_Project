@@ -12,8 +12,8 @@ func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.
 	}
 
 	cart := models.Cart{
-		CustomerID: customer_id,
-		ProductID:  product_id,
+		CustomerID: uint(customer_id),
+		ProductID:  uint(product_id),
 		Price:      product.Price,
 		Qty:        carts.Qty,
 	}

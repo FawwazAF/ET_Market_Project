@@ -48,7 +48,7 @@ func GetSellerController(c echo.Context) error {
 	}
 
 	category_name := c.Param("category_name")
-	list_seller, err := database.GetSeller(market_id, category_name)
+	list_seller, err := database.GetSellerbyName(market_id, category_name)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "seller is not found",
