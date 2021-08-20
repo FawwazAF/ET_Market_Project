@@ -6,29 +6,14 @@ import (
 	"etmarket/project/models"
 )
 
-/*
-Author: Riska
-This function for register driver
-*/
 func CreateDriver(driver models.Driver) (interface{}, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
 		return nil, err
 	}
-
-	//set output data
-	output := map[string]interface{}{
-		"id":    driver.ID,
-		"email": driver.Email,
-		"name":  driver.Name,
-	}
-
-	return output, nil
+	return driver, nil
 }
 
-/*
-Author: Riska
-This function for login driver with matching data from database
-*/
+//login driver with matching data from database
 func LoginDriver(email string) (interface{}, error) {
 	var driver models.Driver
 	var err error
@@ -42,15 +27,7 @@ func LoginDriver(email string) (interface{}, error) {
 	if err := config.DB.Save(driver).Error; err != nil {
 		return nil, err
 	}
-
-	//set output data
-	output := map[string]interface{}{
-		"id":    driver.ID,
-		"email": driver.Email,
-		"token": driver.Token,
-	}
-
-	return output, nil
+	return driver, err
 }
 
 /*
@@ -63,10 +40,6 @@ func GetPwdDriver(email string) string {
 	return driver.Password
 }
 
-/*
-Author: Riska
-This function for check is email driver exists
-*/
 func CheckEmailOnDriver(email string) (interface{}, error) {
 	var driver models.Driver
 
@@ -77,10 +50,6 @@ func CheckEmailOnDriver(email string) (interface{}, error) {
 	return driver, nil
 }
 
-/*
-Author: Riska
-This function for get 1 specified driver with interface output
-*/
 func GetDriverById(driver_id int) (interface{}, error) {
 	var driver models.Driver
 	if err := config.DB.Where("id=?", driver_id).First(&driver).Error; err != nil {
@@ -99,10 +68,7 @@ func GetDriverById(driver_id int) (interface{}, error) {
 	return output, nil
 }
 
-/*
-Author: Riska
-This function for get 1 specified driver with driver struct output
-*/
+//get 1 specified driver with Driver struct output
 func GetDriver(id int) (models.Driver, error) {
 	var driver models.Driver
 	if err := config.DB.Find(&driver, "id=?", id).Error; err != nil {
@@ -112,10 +78,6 @@ func GetDriver(id int) (models.Driver, error) {
 }
 
 //get email driver
-/*
-Author: Riska
-This function for get email driver
-*/
 func GetEmailDriverById(driver_id int) (string, error) {
 	var driver models.Driver
 
@@ -126,10 +88,7 @@ func GetEmailDriverById(driver_id int) (string, error) {
 	return driver.Email, nil
 }
 
-/*
-Author: Riska
-This function for update driver info from database
-*/
+//update driver info from database
 func UpdateDriver(driver models.Driver) (interface{}, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
 		return nil, err

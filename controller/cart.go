@@ -10,6 +10,9 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Patmiza
+*/
 func InsertProductIntoCartController(c echo.Context) error {
 	logged_in_user_id := middlewares.ExtractToken(c)
 
@@ -45,6 +48,9 @@ func InsertProductIntoCartController(c echo.Context) error {
 	})
 }
 
+/*
+Author: Patmiza
+*/
 func GetAllCartsController(c echo.Context) error {
 	logged_in_user_id := middlewares.ExtractToken(c)
 	carts, err := database.GetAllCarts(logged_in_user_id)
@@ -57,15 +63,21 @@ func GetAllCartsController(c echo.Context) error {
 	})
 }
 
+/*
+Author: Patmiza
+*/
 func DeleteProductInCartsController(c echo.Context) error {
+	//checking product id
 	product_id, err := strconv.Atoi(c.Param("product_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid product id",
 		})
 	}
-	logged_in_user_id := middlewares.ExtractToken(c)
-	carts, err := database.DeleteProductFromCart(logged_in_user_id, product_id)
+
+	//extracting token of customer id
+	logged_in_customer_id := middlewares.ExtractToken(c)
+	carts, err := database.DeleteProductFromCart(logged_in_customer_id, product_id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
