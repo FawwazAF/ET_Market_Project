@@ -86,7 +86,17 @@ func GetDriverById(driver_id int) (interface{}, error) {
 	if err := config.DB.Where("id=?", driver_id).First(&driver).Error; err != nil {
 		return nil, err
 	}
-	return driver, nil
+
+	//set output data
+	output := map[string]interface{}{
+		"id":     driver.ID,
+		"email":  driver.Email,
+		"name":   driver.Name,
+		"alamat": driver.Address,
+		"gender": driver.Gender,
+	}
+
+	return output, nil
 }
 
 /*
@@ -127,6 +137,7 @@ func UpdateDriver(driver models.Driver) (interface{}, error) {
 
 	//set output data
 	output := map[string]interface{}{
+		"id":     driver.ID,
 		"name":   driver.Name,
 		"email":  driver.Email,
 		"alamat": driver.Address,
