@@ -2,6 +2,7 @@ package controller
 
 import (
 	"etmarket/project/lib/database"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"net/http"
 	"strconv"
@@ -11,6 +12,21 @@ import (
 	"github.com/labstack/echo"
 )
 
+// func Authorized(c echo.Context) (bool, models.Seller) {
+// 	seller_id := middlewares.ExtractToken(c)
+// 	token := database.GetTokenSeller(seller_id)
+// 	seller, _ := database.GetSeller(seller_id)
+
+// 	if seller.Token != token {
+// 		return false, seller
+// 	}
+// 	return true, seller
+// }
+
+/*
+Author: Riska
+This function for register seller
+*/
 func RegisterSeller(c echo.Context) error {
 	//get user's input
 	seller := models.Seller{}
@@ -41,13 +57,17 @@ func RegisterSeller(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for login seller
+*/
 func LoginSeller(c echo.Context) error {
 	//get user's input
 	seller := models.Seller{}
 	c.Bind(&seller)
 
 	//compare password on form with db
-	get_pwd := database.GetPwd(seller.Email) //get password
+	get_pwd := database.GetPwdSeller(seller.Email) //get password
 	err := bcrypt.CompareHashAndPassword([]byte(get_pwd), []byte(seller.Password))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
@@ -67,6 +87,10 @@ func LoginSeller(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for get profile seller
+*/
 func GetDetailSeller(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
@@ -85,6 +109,10 @@ func GetDetailSeller(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for edit profile seller
+*/
 func UpdateSeller(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
@@ -208,5 +236,71 @@ func EditSellerProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success",
 		"data":    product_edited,
+	})
+}
+
+/*
+Author: Riska
+This function for get all order by seller id
+*/
+func GetAllOrders(c echo.Context) error {
+	logged_in_user_id := middlewares.ExtractToken(c)
+
+	list_product, err := database.GetAllProductsOrderBySellerId(logged_in_user_id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot get list product",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"data": list_product,
+	})
+}
+
+/*
+Author: Riska
+This function for edit status item order
+*/
+func EditStatusItemOrder(c echo.Context) error {
+	logged_in_user_id := middlewares.ExtractToken(c)
+
+	order_id, err := strconv.Atoi(c.Param("order_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid order id",
+		})
+	}
+
+	seller_id, err := database.GetSellerIdByOderId(order_id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot get seller id",
+		})
+	}
+
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized edit status order")
+	}
+
+	order, err := database.GetItemOrderByOrderId(order_id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot get order",
+		})
+	}
+
+	order.Status = "completed"
+	c.Bind(&order)
+
+	update_status, err := database.EditItemStatus(order)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot update status product",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"data": update_status,
 	})
 }

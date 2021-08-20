@@ -12,6 +12,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Riska
+This function for encrypt password
+*/
 func EncryptPwd(pwd []byte) string {
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
 	if err != nil {
@@ -21,6 +25,10 @@ func EncryptPwd(pwd []byte) string {
 	return string(hash)
 }
 
+/*
+Author: Riska
+This function for register customer
+*/
 func RegisterCustomer(c echo.Context) error {
 	//get user's input
 	customer := models.Customer{}
@@ -51,13 +59,17 @@ func RegisterCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for login customer
+*/
 func LoginCustomer(c echo.Context) error {
 	//get user's input
 	customer := models.Customer{}
 	c.Bind(&customer)
 
 	//compare password on form with db
-	get_pwd := database.GetPwd(customer.Email) //get password
+	get_pwd := database.GetPwdCustomer(customer.Email) //get password
 	err := bcrypt.CompareHashAndPassword([]byte(get_pwd), []byte(customer.Password))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
@@ -88,6 +100,10 @@ func GetAllPaymentMethod(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for get profile customer
+*/
 func GetDetailCustomer(c echo.Context) error {
 	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {
@@ -106,6 +122,10 @@ func GetDetailCustomer(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for edit profile customer
+*/
 func UpdateCustomer(c echo.Context) error {
 	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {

@@ -6,6 +6,10 @@ import (
 	"etmarket/project/models"
 )
 
+/*
+Author: Riska
+This function for register customer
+*/
 func CreateSeller(seller models.Seller) (interface{}, error) {
 	if err := config.DB.Save(&seller).Error; err != nil {
 		return nil, err
@@ -13,7 +17,10 @@ func CreateSeller(seller models.Seller) (interface{}, error) {
 	return seller, nil
 }
 
-//login seller with matching data from database
+/*
+Author: Riska
+This function for login customer with matching data from database
+*/
 func LoginSeller(email string) (interface{}, error) {
 	var seller models.Seller
 	var err error
@@ -30,6 +37,30 @@ func LoginSeller(email string) (interface{}, error) {
 	return seller, err
 }
 
+/*
+Author: Riska
+This function for search password user by email
+*/
+func GetPwdSeller(email string) string {
+	var seller models.Seller
+	config.DB.Where("email = ?", email).First(&seller)
+	return seller.Password
+}
+
+/*
+Author: Riska
+This function for get token seller
+*/
+func GetTokenSeller(seller_id int) string {
+	var seller models.Seller
+	config.DB.Where("id = ?", seller_id).First(&seller)
+	return seller.Token
+}
+
+/*
+Author: Riska
+This function for check is email customer exists
+*/
 func CheckEmailOnSeller(email string) (interface{}, error) {
 	var seller models.Seller
 
@@ -40,6 +71,10 @@ func CheckEmailOnSeller(email string) (interface{}, error) {
 	return seller, nil
 }
 
+/*
+Author: Riska
+This function for get 1 specified customer with interface output
+*/
 func GetSellerById(seller_id int) (interface{}, error) {
 	var seller models.Seller
 	if err := config.DB.Where("id=?", seller_id).First(&seller).Error; err != nil {
@@ -48,7 +83,10 @@ func GetSellerById(seller_id int) (interface{}, error) {
 	return seller, nil
 }
 
-//get 1 specified seller with Seller struct output
+/*
+Author: Riska
+This function for get 1 specified customer with Customer struct output
+*/
 func GetSeller(id int) (models.Seller, error) {
 	var seller models.Seller
 	if err := config.DB.Find(&seller, "id=?", id).Error; err != nil {
@@ -57,7 +95,10 @@ func GetSeller(id int) (models.Seller, error) {
 	return seller, nil
 }
 
-//get email seller
+/*
+Author: Riska
+This function for get email customer
+*/
 func GetEmailSellerById(seller_id int) (string, error) {
 	var seller models.Seller
 
@@ -68,7 +109,10 @@ func GetEmailSellerById(seller_id int) (string, error) {
 	return seller.Email, nil
 }
 
-//update seller info from database
+/*
+Author: Riska
+This function for update customer info from database
+*/
 func UpdateSeller(seller models.Seller) (interface{}, error) {
 	if err := config.DB.Save(&seller).Error; err != nil {
 		return nil, err
@@ -96,4 +140,16 @@ func EditSellerProduct(product_id int, seller_id int, product models.Product) (m
 		return product, err
 	}
 	return product, nil
+}
+
+/*
+Author: Riska
+This function for get seller id
+*/
+func GetSellerIdByOderId(order_id int) (int, error) {
+	var seller_id int
+	var err error
+	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products_id AND orders.id = ?", order_id).Scan(&seller_id)
+
+	return seller_id, err
 }

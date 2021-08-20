@@ -11,6 +11,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Riska
+This function for register driver
+*/
 func RegisterDriver(c echo.Context) error {
 	//get user's input
 	driver := models.Driver{}
@@ -41,13 +45,17 @@ func RegisterDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for login driver
+*/
 func LoginDriver(c echo.Context) error {
 	//get user's input
 	driver := models.Driver{}
 	c.Bind(&driver)
 
 	//compare password on form with db
-	get_pwd := database.GetPwd(driver.Email) //get password
+	get_pwd := database.GetPwdDriver(driver.Email) //get password
 	err := bcrypt.CompareHashAndPassword([]byte(get_pwd), []byte(driver.Password))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
@@ -67,6 +75,10 @@ func LoginDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for get profile driver
+*/
 func GetDetailDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
@@ -85,6 +97,10 @@ func GetDetailDriver(c echo.Context) error {
 	})
 }
 
+/*
+Author: Riska
+This function for edit profile driver
+*/
 func UpdateDriver(c echo.Context) error {
 	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
