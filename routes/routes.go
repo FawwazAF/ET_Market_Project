@@ -28,6 +28,7 @@ func New(e *echo.Echo) {
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
 	e.POST("/customer/login", controller.LoginCustomer)
+	e.GET("/payments", controller.GetAllPaymentMethod)
 
 	//--------------------------Driver--------------------------//
 	e.POST("/driver/register", controller.RegisterDriver)
@@ -36,9 +37,6 @@ func New(e *echo.Echo) {
 	//--------------------------Seller--------------------------//
 	e.POST("/seller/register", controller.RegisterSeller)
 	e.POST("/seller/login", controller.LoginSeller)
-	e.GET("/seller/:seller_id/products", controller.GetSellerProducts)
-	e.POST("/seller/:seller_id/products", controller.AddProductToSeller)
-	e.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")

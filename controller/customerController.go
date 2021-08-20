@@ -77,19 +77,59 @@ func LoginCustomer(c echo.Context) error {
 	})
 }
 
+<<<<<<< HEAD
 func LogoutCustomer(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("customer_id"))
+=======
+func GetAllPaymentMethod(c echo.Context) error {
+	payments, err := database.GetManyPayment()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  payments,
+	})
+}
+
+func GetDetailCustomer(c echo.Context) error {
+	customer_id, err := strconv.Atoi(c.Param("customer_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid customer id",
+		})
+	}
+	data_customer, err := database.GetCustomerById(customer_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "Cant find customer",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"customer": data_customer,
+	})
+}
+
+func UpdateCustomer(c echo.Context) error {
+	customer_id, err := strconv.Atoi(c.Param("customer_id"))
+>>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
+<<<<<<< HEAD
 	logout, err := database.GetCustomer(id)
+=======
+
+	email_customer, err := database.GetEmailCustomerById(customer_id)
+>>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
 		})
 	}
+<<<<<<< HEAD
 	logout.Token = ""
 	c.Bind(&logout)
 	customer_updated, err := database.UpdateCustomer(logout)
@@ -101,5 +141,40 @@ func LogoutCustomer(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "Logout success!",
 		"data":    customer_updated,
+=======
+
+	customer, err := database.GetCustomer(customer_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
+	c.Bind(&customer)
+
+	if customer.Email != email_customer {
+		//check is email exists?
+		is_email_exists, _ := database.CheckEmailOnCustomer(customer.Email)
+		if is_email_exists != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{
+				"message": "Email has already exist",
+			})
+		}
+	}
+
+	//encrypt pass user
+	convert_pwd := []byte(customer.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	customer.Password = hashed_pwd //set new pass
+
+	updated_customer, err := database.UpdateCustomer(customer)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot update data",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":       "success update customer",
+		"data customer": updated_customer,
+>>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 	})
 }

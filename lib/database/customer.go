@@ -47,6 +47,17 @@ func CheckEmailOnCustomer(email string) (interface{}, error) {
 	return customer, nil
 }
 
+<<<<<<< HEAD
+=======
+func GetManyPayment() (interface{}, error) {
+	var payments []models.Payment
+	if err := config.DB.Find(&payments).Error; err != nil {
+		return nil, err
+	}
+	return payments, nil
+}
+
+>>>>>>> 55d8e9e90b2e54b1687498b1305617a65292e9ef
 func GetCustomerById(customer_id int) (interface{}, error) {
 	var customer models.Customer
 	if err := config.DB.Where("id=?", customer_id).First(&customer).Error; err != nil {
