@@ -20,6 +20,11 @@ func CheckoutTransaction(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if len(carts) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cart is empty",
+		})
+	}
 
 	//Create new checkout
 	new_checkout, err := database.Checkout(logged_in_user_id, checkout, carts)

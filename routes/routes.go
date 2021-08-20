@@ -18,13 +18,13 @@ func New(e *echo.Echo) {
 	e.GET("/categories", controller.GetAllCategories) //for register seller
 
 	//-------------------------Shop----------------------------//
-	e.GET("/markets/:market_id/shop", controller.GetAllCategoriesMarketIdController)
-	// e.GET("/markets/:market_id/shop/:category_name", controller.GetCategoryNameMarketIdController)
+	e.GET("/markets/:market_id/seller", controller.GetAllCategoriesMarketIdController)
+	e.GET("/markets/:market_id/seller/:category_name", controller.GetCategoryNameMarketIdController)
 
 	//-------------------------Product----------------------------//
-	e.GET("/shop/:shop_id/product", controller.GetAllProductInShop)
-	e.GET("/shop/:shop_id/product/name/:product_name", controller.GetSpecificProductInShop)
-	e.GET("/shop/:shop_id/product/id/:product_id", controller.GetDetailSpecificProduct)
+	e.GET("/seller/:seller_id/product", controller.GetAllProductInShop)
+	e.GET("/seller/:seller_id/product/name/:product_name", controller.GetSpecificProductInShop)
+	e.GET("/seller/:seller_id/product/id/:product_id", controller.GetDetailSpecificProduct)
 
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer)
@@ -61,8 +61,8 @@ func New(e *echo.Echo) {
 	r.PUT("/driver/:driver_id", controller.UpdateDriver)
 
 	//-------------------------Cart----------------------------//
-	r.POST("/shop/:shop_id/product/id/:product_id", controller.InsertProductIntoCartController)
-	r.GET("/cart", controller.GetProductInCartContorller)
+	r.POST("/seller/:seller_id/product/id/:product_id", controller.InsertProductIntoCartController)
+	r.GET("/cart", controller.GetAllCartsController)
 	r.DELETE("/cart/produtc/:product_id", controller.DeleteProductInCartsController)
 
 	//--------------------------Checkout--------------------------//
