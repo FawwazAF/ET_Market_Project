@@ -88,5 +88,6 @@ func New(e *echo.Echo) {
 
 	r.GET("/driver/orderlist", controller.GetOrderList)
 	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
+	r.PUT("/driver/orderlist/:checkout_id", controller.FinishedDelivery)
 
 }

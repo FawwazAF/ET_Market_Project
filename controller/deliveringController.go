@@ -54,3 +54,27 @@ func TakeCheckout(c echo.Context) error {
 		"users":  delivery,
 	})
 }
+
+func FinishedDelivery(c echo.Context) error {
+	logged_driver_id := middlewares.ExtractToken(c)
+	if logged_driver_id == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "please login first",
+		})
+	}
+	//Check Checkout ID
+	checkout_id, err := strconv.Atoi(c.Param("checkout_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "input invalid",
+		})
+	}
+	delivery, err := database.EditDelivery(logged_driver_id, checkout_id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"users":  delivery,
+	})
+}

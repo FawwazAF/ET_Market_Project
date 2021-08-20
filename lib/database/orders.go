@@ -32,3 +32,15 @@ func MakeDelivery(driver_id, checkout_id int) (interface{}, error) {
 	}
 	return delivery, nil
 }
+
+func EditDelivery(driver_id, checkout_id int) (interface{}, error) {
+	var delivery models.Delivery
+	if err := config.DB.Find(&delivery, "driver_id=? AND checkout_id=?", driver_id, checkout_id).Error; err != nil {
+		return nil, err
+	}
+	delivery.Status = "completed"
+	if err := config.DB.Save(delivery).Error; err != nil {
+		return nil, err
+	}
+	return delivery, nil
+}
