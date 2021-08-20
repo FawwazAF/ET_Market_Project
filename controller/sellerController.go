@@ -134,3 +134,79 @@ func UpdateSeller(c echo.Context) error {
 		"data seller": updated_seller,
 	})
 }
+
+func GetSellerProducts(c echo.Context) error {
+	// auth, userList := Authorized(c)
+	// if auth == false {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "Cannot access this account")
+	// }
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid seller id",
+		})
+	}
+	all_products_selected_seller, err := database.GetAllSellerProduct(seller_id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, map[string]interface{}{
+			"message": "no products in the shop",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "get all products from this shop success",
+		"data":    all_products_selected_seller,
+	})
+}
+
+func AddProductToSeller(c echo.Context) error {
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid id",
+		})
+	}
+	product := models.Product{}
+	product.SellerID = uint(seller_id)
+	c.Bind(&product)
+
+	product_added, err := database.AddProductToSeller(product)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot add product",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"data":    product_added,
+	})
+}
+
+func EditSellerProduct(c echo.Context) error {
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid seller id",
+		})
+	}
+
+	product_id, err := strconv.Atoi(c.Param("product_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid product id",
+		})
+	}
+
+	product := models.Product{}
+	c.Bind(&product)
+
+	product_edited, err := database.EditSellerProduct(seller_id, product_id, product)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "cannot edit product",
+		})
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"data":    product_edited,
+	})
+}
