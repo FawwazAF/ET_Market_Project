@@ -26,17 +26,20 @@ func New(e *echo.Echo) {
 	e.GET("/seller/:seller_id/product/id/:product_id", controller.GetDetailSpecificProduct)
 
 	//--------------------------Customer--------------------------//
-	e.POST("/customer/register", controller.RegisterCustomer)
-	e.POST("/customer/login", controller.LoginCustomer)
+	e.POST("/customer/register", controller.RegisterCustomer) //Riska
+	e.POST("/customer/login", controller.LoginCustomer)       //Riska
 	e.GET("/payments", controller.GetAllPaymentMethod)
 
 	//--------------------------Driver--------------------------//
-	e.POST("/driver/register", controller.RegisterDriver)
-	e.POST("/driver/login", controller.LoginDriver)
+	e.POST("/driver/register", controller.RegisterDriver) //Riska
+	e.POST("/driver/login", controller.LoginDriver)       //Riska
 
 	//--------------------------Seller--------------------------//
-	e.POST("/seller/register", controller.RegisterSeller)
-	e.POST("/seller/login", controller.LoginSeller)
+	e.POST("/seller/register", controller.RegisterSeller) //Riska
+	e.POST("/seller/login", controller.LoginSeller)       //Riska
+
+	//--------------------------History----------------------//
+	e.GET("/history/checkout_id/orders", controller.GetSelectedOrder) // Ihsan
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")
@@ -46,22 +49,23 @@ func New(e *echo.Echo) {
 	r.POST("/checkout", controller.CheckoutTransaction)
 
 	//--------------------------History-------------------------//
-	r.GET("/history?status=progress", controller.GetCheckoutStatusInProgress)
-	r.GET("/history?status=completed", controller.GetCheckoutStatusComplete)
+	r.GET("/history?status=progress", controller.GetCheckoutStatusInProgress) // Ihsan
+	r.GET("/history?status=completed", controller.GetCheckoutStatusComplete)  // ihsan
+
 	//--------------------------Customer--------------------------//
-	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
-	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer) //Riska
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)    //Riska
 
 	//--------------------------Seller--------------------------//
-	r.GET("/seller/:seller_id", controller.GetDetailSeller)
-	r.PUT("/seller/:seller_id", controller.UpdateSeller)
-	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
-	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
-	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)                        //Riska
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)                           //Riska
+	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)             // Ihsan
+	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)           // Ihsan
+	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct) // Ihsan
 
 	//--------------------------Driver--------------------------//
-	r.GET("/driver/:driver_id", controller.GetDetailDriver)
-	r.PUT("/driver/:driver_id", controller.UpdateDriver)
+	r.GET("/driver/:driver_id", controller.GetDetailDriver) //Riska
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)    //Riska
 
 	//-------------------------Cart----------------------------//
 	r.POST("/seller/:seller_id/product/id/:product_id", controller.InsertProductIntoCartController)
@@ -72,20 +76,26 @@ func New(e *echo.Echo) {
 	r.POST("/checkout", controller.CheckoutTransaction)
 
 	//--------------------------Customer--------------------------//
-	r.GET("/customer/:customer_id", controller.GetDetailCustomer)
-	r.PUT("/customer/:customer_id", controller.UpdateCustomer)
-	r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer)
+	r.GET("/customer/:customer_id", controller.GetDetailCustomer)     //Riska
+	r.PUT("/customer/:customer_id", controller.UpdateCustomer)        //Riska
+	r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer) //Riska
 
 	//--------------------------Seller--------------------------//
-	r.GET("/seller/:seller_id", controller.GetDetailSeller)
-	r.PUT("/seller/:seller_id", controller.UpdateSeller)
+	r.GET("/seller/:seller_id", controller.GetDetailSeller) //Riska
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)    //Riska
 	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
 	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
 	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
-	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)
+	r.GET("/seller/orderlist", controller.GetAllOrders)                  //Riska
+	r.PUT("/seller/orderlist/:order_id", controller.EditStatusItemOrder) //Riska
+	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)          //Riska
 
 	//--------------------------Driver--------------------------//
-	r.GET("/driver/:driver_id", controller.GetDetailDriver)
-	r.PUT("/driver/:driver_id", controller.UpdateDriver)
-	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver)
+	r.GET("/driver/orderlist", controller.GetOrderList)
+	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
+	r.PUT("/driver/orderlist/:checkout_id", controller.FinishedDelivery)
+	r.GET("/driver/:driver_id", controller.GetDetailDriver)     //Riska
+	r.PUT("/driver/:driver_id", controller.UpdateDriver)        //Riska
+	r.PUT("/driver/logout/:driver_id", controller.LogoutDriver) //Riska
+
 }

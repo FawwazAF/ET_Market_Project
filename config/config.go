@@ -32,18 +32,15 @@ func InitPort() {
 }
 
 func InitMigrate() {
+	DB.AutoMigrate(&models.Cart{})
+	DB.AutoMigrate(&models.Category{})
+	DB.AutoMigrate(&models.Checkout{})
 	DB.AutoMigrate(&models.Customer{})
+	DB.AutoMigrate(&models.Delivery{})
 	DB.AutoMigrate(&models.Driver{})
 	DB.AutoMigrate(&models.Market{})
 	DB.AutoMigrate(&models.Seller{})
 	DB.AutoMigrate(&models.Product{})
-	DB.AutoMigrate(&models.Market{})
-	DB.AutoMigrate(&models.Category{})
-<<<<<<< HEAD
-=======
-	DB.AutoMigrate(&models.Cart{})
-	DB.AutoMigrate(&models.Checkout{})
 	DB.AutoMigrate(&models.Order{})
-	DB.AutoMigrate(&models.Delivery{})
->>>>>>> 48353d70c37039491df3ae60b3ea01b095da5dc6
+	DB.AutoMigrate(&models.Payment{})
 }

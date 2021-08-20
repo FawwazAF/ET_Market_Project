@@ -35,10 +35,6 @@ func CheckEmailOnDriver(email string) (interface{}, error) {
 
 	if err := config.DB.Model(&driver).Select("email").Where("email=?", email).First(&driver.Email).Error; err != nil {
 		return nil, err
-<<<<<<< HEAD
-	}
-
-=======
 	}
 
 	return driver, nil
@@ -77,6 +73,5 @@ func UpdateDriver(driver models.Driver) (interface{}, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
 		return nil, err
 	}
->>>>>>> 48353d70c37039491df3ae60b3ea01b095da5dc6
 	return driver, nil
 }

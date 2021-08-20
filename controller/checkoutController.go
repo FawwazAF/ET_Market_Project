@@ -5,6 +5,7 @@ import (
 	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -21,7 +22,7 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if len(carts) == 0 {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "cart is empty",
 		})
 	}
@@ -48,6 +49,7 @@ func CheckoutTransaction(c echo.Context) error {
 	})
 }
 
+// Ihsan
 func GetCheckoutStatusInProgress(c echo.Context) error {
 	status := c.QueryParam("status")
 	in_progress_checkout, err := database.GetHistoryInProgress(status)
@@ -62,6 +64,7 @@ func GetCheckoutStatusInProgress(c echo.Context) error {
 	})
 }
 
+// Ihsan
 func GetCheckoutStatusComplete(c echo.Context) error {
 	status := c.QueryParam("status")
 	in_complete_checkout, err := database.GetHistoryInProgress(status)
@@ -73,5 +76,23 @@ func GetCheckoutStatusComplete(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "request success",
 		"data":    in_complete_checkout,
+	})
+}
+
+// Ihsan
+func GetSelectedOrder(c echo.Context) error {
+	checkout_id, err := strconv.Atoi(c.Param("checkout_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "invalid checkout id",
+		})
+	}
+	data, err := database.GetSelectedOrder(checkout_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "succesfully retrieve data",
+		"data":    data,
 	})
 }
