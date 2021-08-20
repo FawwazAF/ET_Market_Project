@@ -32,11 +32,6 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	//Update data checkout total_qty and total_price
-	// if err := database.CheckoutUpdate(logged_in_user_id); err != nil {
-	// 	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	// }
-
 	// Hard Delete cart
 	if err := database.DeleteCart(logged_in_user_id); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

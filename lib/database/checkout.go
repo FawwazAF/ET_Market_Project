@@ -27,6 +27,7 @@ func CartMigrate(id, checkout_id int) error {
 			Price:      v.Price,
 			ProductID:  v.ProductID,
 			CheckoutID: uint(checkout_id),
+			Status:     "progress",
 		}
 		if err := config.DB.Save(&order).Error; err != nil {
 			return err
@@ -46,8 +47,8 @@ func Checkout(customer_id int, checkout models.Checkout, carts []models.Cart) (m
 		TotalQty:   total_qty,
 		TotalPrice: total_price,
 		CustomerID: uint(customer_id),
-		DriverID:   checkout.DriverID,
 		PaymentID:  checkout.PaymentID,
+		Status:     "searching",
 	}
 	if err := config.DB.Save(&new_checkout).Error; err != nil {
 		return new_checkout, err
@@ -55,36 +56,35 @@ func Checkout(customer_id int, checkout models.Checkout, carts []models.Cart) (m
 	return new_checkout, nil
 }
 
-func CheckoutUpdate(id int) error {
-	//Find particular orders and checkout by checkout_id
-	var orders []models.Order
-	var checkout models.Checkout
-	if err := config.DB.Find(&checkout, "id=?", id).Error; err != nil {
-		return err
-	}
-	if err := config.DB.Find(&orders, "checkout_id=?", id).Error; err != nil {
-		return err
-	}
+// func CheckoutUpdate(id int) error {
+// 	//Find particular orders and checkout by checkout_id
+// 	var orders []models.Order
+// 	var checkout models.Checkout
+// 	if err := config.DB.Find(&checkout, "id=?", id).Error; err != nil {
+// 		return err
+// 	}
+// 	if err := config.DB.Find(&orders, "checkout_id=?", id).Error; err != nil {
+// 		return err
+// 	}
 
-	//Iterative calculate total_qty and total_price
-	total_qty := 0
-	total_price := 0
-	for _, v := range orders {
-		total_qty += v.Qty
-		total_price = total_price + (v.Qty * v.Price)
-	}
-	checkout = models.Checkout{
-		TotalQty:   total_qty,
-		TotalPrice: total_price,
-		DriverID:   checkout.DriverID,
-		PaymentID:  checkout.PaymentID,
-	}
+// 	//Iterative calculate total_qty and total_price
+// 	total_qty := 0
+// 	total_price := 0
+// 	for _, v := range orders {
+// 		total_qty += v.Qty
+// 		total_price = total_price + (v.Qty * v.Price)
+// 	}
+// 	checkout = models.Checkout{
+// 		TotalQty:   total_qty,
+// 		TotalPrice: total_price,
+// 		PaymentID:  checkout.PaymentID,
+// 	}
 
-	if err := config.DB.Save(&checkout).Error; err != nil {
-		return err
-	}
-	return nil
-}
+// 	if err := config.DB.Save(&checkout).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func DeleteCart(id int) error {
 	var carts []models.Cart

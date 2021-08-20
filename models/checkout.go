@@ -8,6 +8,5 @@ type Checkout struct {
 	TotalPrice int    `json:"total_price" form:"total_price"`
 	CustomerID uint   `json:"customer_id" form:"customer_id"`
 	PaymentID  uint   `json:"payment_id" form:"payment_id"`
-	DriverID   uint   `json:"driver_id" form:"driver_id"`
-	Status     string `json:"status" form:"status"`
+	Status     string `json:"status" form:"status" gorm:"type:enum('searching', 'delivery', 'completed')"`
 }
