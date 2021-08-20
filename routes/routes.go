@@ -102,4 +102,10 @@ func New(e *echo.Echo) {
 	r.POST("/driver/orderlist/:checkout_id", controller.TakeCheckout)
 	r.PUT("/driver/orderlist/:checkout_id", controller.FinishedDelivery)
 
+	//--------------------------Delivery--------------------------//
+	r.GET("/driver/history", controller.GetAllCompletedDeliveriesController) //patmiza
+
+	//--------------------------Order--------------------------//
+	r.GET("/driver/history", controller.GetAllProgressOrdersController) //patmiza
+
 }

@@ -5,6 +5,10 @@ import (
 	"etmarket/project/models"
 )
 
+/*
+Author: Patmiza
+Inserting product into cart
+*/
 func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.Cart) (interface{}, error) {
 	var product models.Product
 	if err := config.DB.Find(&product, "id = ? AND seller_id = ?", product_id, seller_id).Error; err != nil {
@@ -23,6 +27,10 @@ func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.
 	return cart, nil
 }
 
+/*
+Author: Patmiza
+Getting all carts for spesific customer
+*/
 func GetAllCarts(customer_id int) (interface{}, error) {
 	var carts []models.Cart
 	if err := config.DB.Find(&carts, "customer_id= ?", customer_id).Error; err != nil {
@@ -31,13 +39,17 @@ func GetAllCarts(customer_id int) (interface{}, error) {
 	return carts, nil
 }
 
+/*
+Author: Patmiza
+Deleting a product from a cart for spesific customer and spesific product
+*/
 func DeleteProductFromCart(customer_id, product_id int) (interface{}, error) {
-	var carts models.Cart
-	if err := config.DB.Find(&carts, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
+	var cart models.Cart
+	if err := config.DB.Find(&cart, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
 		return nil, err
 	}
-	if err := config.DB.Delete(&carts, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
+	if err := config.DB.Delete(&cart, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
 		return nil, err
 	}
-	return carts, nil
+	return cart, nil
 }
