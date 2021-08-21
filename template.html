@@ -69,16 +69,12 @@
             <div class="success-trans">
             	<p>SUCCESSFUL TRANSACTION</p>
             </div>
-
-            {{.Product}}
             
             <div class="content2">
             	<p>Dear {{.Name}},</p>
                 <p>Please see your order details below: </p>
             </div>
 
-            {$product = {{.Product}}}
-            
             <div class="order_detail">
                 <table>
                   <tr>
@@ -86,23 +82,20 @@
                   	<th>Quantity</th>
                     <th>Price</th>
                   </tr>
-                {foreach $product as $data}
+                  {{range $index, $elem := .Product}}
+                    <tr>
+                      <td>{{$elem.Name}}</td>
+                      <td>{{$elem.Qty}}</td>
+                      <td>{{$elem.Price}}</td>
+                    </tr>
                   <tr>
-                    <td>{$data.Name}</td>
-                    <td>{$data.Qty}</td>
-                    <td>{$data.Price}</td>
-                  </tr>
-                  {/foreach}
-                  <tr>
+                  {{end}}
                     <th colspan="2"><center>Total</center></th>
                     <th>{{.TotalPrice}}</th>
                   </tr>
                 </table>
             </div>
-            
         </div>
     </div>
-    
-    
 </body>
 </html>
