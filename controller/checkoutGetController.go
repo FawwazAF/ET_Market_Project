@@ -11,20 +11,9 @@ import (
 
 // Ihsan
 func GetCheckoutStatusInProgress(c echo.Context) error {
-	checkout_id, err := strconv.Atoi(c.Param("checkout_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid checkout id",
-		})
-	}
-
 	logged_in_user_id := middlewares.ExtractToken(c)
-	if logged_in_user_id != checkout_id {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
-	}
-
 	status := c.QueryParam("status")
-	in_progress_checkout, err := database.GetHistoryInProgress(status, checkout_id)
+	inprogress_checkout, err := database.GetHistoryInProgress(status, logged_in_user_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "request not found",
@@ -32,26 +21,15 @@ func GetCheckoutStatusInProgress(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "request success",
-		"data":    in_progress_checkout,
+		"data":    inprogress_checkout,
 	})
 }
 
 // Ihsan
 func GetCheckoutStatusComplete(c echo.Context) error {
-	checkout_id, err := strconv.Atoi(c.Param("checkout_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid checkout id",
-		})
-	}
-
 	logged_in_user_id := middlewares.ExtractToken(c)
-	if logged_in_user_id != checkout_id {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
-	}
-
 	status := c.QueryParam("status")
-	in_complete_checkout, err := database.GetHistoryInProgress(status, checkout_id)
+	complete_checkout, err := database.GetHistoryInProgress(status, logged_in_user_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "request not found",
@@ -59,7 +37,7 @@ func GetCheckoutStatusComplete(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "request success",
-		"data":    in_complete_checkout,
+		"data":    complete_checkout,
 	})
 }
 

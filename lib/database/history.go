@@ -5,19 +5,18 @@ import (
 	"etmarket/project/models"
 )
 
-func GetHistoryInProgress(status string, checkout_id int) (interface{}, error) {
+func GetHistoryInProgress(status string, logged_in_user_id int) (interface{}, error) {
 	var checkout []models.Checkout
-	var orders models.Order
-	if err := config.DB.Where(&orders, "status = ? AND checkout_id = ?", status, checkout_id).Find(&checkout).Error; err != nil {
+	if err := config.DB.Find(&checkout, "status = ? AND customer_id = ?", status, logged_in_user_id).Error; err != nil {
 		return nil, err
 	}
 	return checkout, nil
 }
 
-func GetHistoryCompleted(status string, checkout_id int) (interface{}, error) {
+func GetHistoryCompleted(status string, logged_in_user_id int) (interface{}, error) {
 	var checkout []models.Checkout
 	var orders models.Order
-	if err := config.DB.Where(&orders, "status = ? AND checkout_id = ?", status, checkout_id).Find(&checkout).Error; err != nil {
+	if err := config.DB.Find(&orders, "status = ? AND customer_id = ?", status, logged_in_user_id).Error; err != nil {
 		return nil, err
 	}
 	return checkout, nil

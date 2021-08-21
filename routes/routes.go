@@ -49,8 +49,8 @@ func New(e *echo.Echo) {
 	r.POST("/checkout", controller.CheckoutTransaction)
 
 	//--------------------------History-------------------------//
-	r.GET("/checkout/:checkout_id/history?status=progress", controller.GetCheckoutStatusInProgress) // Ihsan
-	r.GET("/checkout/:checkout_id/history?status=completed", controller.GetCheckoutStatusComplete)  // ihsan
+	r.GET("/history?status=progress", controller.GetCheckoutStatusInProgress) // Ihsan
+	r.GET("/history?status=completed", controller.GetCheckoutStatusComplete)  // ihsan
 
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer) //Riska
