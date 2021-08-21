@@ -14,7 +14,7 @@ func New(e *echo.Echo) {
 	e.GET("/markets/:market_name", controller.GetSpecificMarket)
 
 	//-------------------------Category----------------------------//
-	e.GET("/categories", controller.GetAllCategories) //for register seller
+	e.GET("/categories", controller.GetAllCategories) //Riska
 
 	//-------------------------Shop----------------------------//
 	e.GET("/markets/:market_id/seller", controller.GetAllCategoriesMarketIdController)

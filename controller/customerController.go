@@ -54,10 +54,14 @@ func RegisterCustomer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new customer",
-		"user":    data_customer,
-	})
+	//set output data
+	output := models.Customer{
+		ID:    data_customer.ID,
+		Email: data_customer.Email,
+		Name:  data_customer.Name,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -84,10 +88,14 @@ func LoginCustomer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "succes login as a customer",
-		"users":  data_customer,
-	})
+	//set output data
+	output := models.Customer{
+		ID:    data_customer.ID,
+		Email: data_customer.Email,
+		Token: data_customer.Token,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -115,9 +123,17 @@ func GetDetailCustomer(c echo.Context) error {
 			"message": "Cant find customer",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"customer": data_customer,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      data_customer.ID,
+		Email:   data_customer.Email,
+		Name:    data_customer.Name,
+		Address: data_customer.Address,
+		Gender:  data_customer.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -178,10 +194,17 @@ func UpdateCustomer(c echo.Context) error {
 			"message": "cannot update data",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":       "success update customer",
-		"data customer": updated_customer,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      updated_customer.ID,
+		Email:   updated_customer.Email,
+		Name:    updated_customer.Name,
+		Address: updated_customer.Address,
+		Gender:  updated_customer.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -189,13 +212,20 @@ Author: Riska
 This function for logout customer
 */
 func LogoutCustomer(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("customer_id"))
+	customer_id, err := strconv.Atoi(c.Param("customer_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
-	logout, err := database.GetCustomer(id)
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != customer_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to logout")
+	}
+
+	logout, err := database.GetCustomer(customer_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
@@ -209,8 +239,15 @@ func LogoutCustomer(c echo.Context) error {
 			"message": "cannot logout",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Logout success!",
-		"data":    customer_updated,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      customer_updated.ID,
+		Email:   customer_updated.Email,
+		Name:    customer_updated.Name,
+		Address: customer_updated.Address,
+		Gender:  customer_updated.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }

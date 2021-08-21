@@ -40,10 +40,14 @@ func RegisterDriver(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new driver",
-		"user":    data_driver,
-	})
+	//set output data
+	output := models.Customer{
+		ID:    data_driver.ID,
+		Email: data_driver.Email,
+		Name:  data_driver.Name,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -70,10 +74,14 @@ func LoginDriver(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "succes login as a driver",
-		"users":  data_driver,
-	})
+	//set output data
+	output := models.Customer{
+		ID:    data_driver.ID,
+		Email: data_driver.Email,
+		Token: data_driver.Token,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -100,9 +108,17 @@ func GetDetailDriver(c echo.Context) error {
 			"message": "Cant find driver",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"driver": data_driver,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      data_driver.ID,
+		Email:   data_driver.Email,
+		Name:    data_driver.Name,
+		Address: data_driver.Address,
+		Gender:  data_driver.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -159,10 +175,17 @@ func UpdateDriver(c echo.Context) error {
 			"message": "cannot update data",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":     "success update driver",
-		"data driver": updated_driver,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      updated_driver.ID,
+		Email:   updated_driver.Email,
+		Name:    updated_driver.Name,
+		Address: updated_driver.Address,
+		Gender:  updated_driver.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -170,13 +193,20 @@ Author: Riska
 This function for logout driver
 */
 func LogoutDriver(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("driver_id"))
+	driver_id, err := strconv.Atoi(c.Param("driver_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
-	logout, err := database.GetDriver(id)
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != driver_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to logout")
+	}
+
+	logout, err := database.GetDriver(driver_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
@@ -190,8 +220,15 @@ func LogoutDriver(c echo.Context) error {
 			"message": "cannot logout",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Logout success!",
-		"data":    driver_updated,
-	})
+
+	//set output data
+	output := models.Customer{
+		ID:      driver_updated.ID,
+		Email:   driver_updated.Email,
+		Name:    driver_updated.Name,
+		Address: driver_updated.Address,
+		Gender:  driver_updated.Gender,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
