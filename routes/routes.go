@@ -21,9 +21,9 @@ func New(e *echo.Echo) {
 	e.GET("/markets/:market_id/seller/:category_name", controller.GetCategoryNameMarketIdController)
 
 	//-------------------------Product----------------------------//
-	e.GET("/seller/:seller_id/product", controller.GetAllProductInShop)
-	e.GET("/seller/:seller_id/product/name/:product_name", controller.GetSpecificProductInShop)
-	e.GET("/seller/:seller_id/product/id/:product_id", controller.GetDetailSpecificProduct)
+	e.GET("/seller/product?seller_id", controller.GetAllProductInShop)                    // Ihsan
+	e.GET("/seller/:seller_id/product?product_name", controller.GetSpecificProductInShop) // Ihsan
+	e.GET("/seller/:seller_id/product?product_id", controller.GetDetailSpecificProduct)   // Ihsan
 
 	//--------------------------Customer--------------------------//
 	e.POST("/customer/register", controller.RegisterCustomer) //Riska
@@ -39,7 +39,7 @@ func New(e *echo.Echo) {
 	e.POST("/seller/login", controller.LoginSeller)       //Riska
 
 	//--------------------------History----------------------//
-	e.GET("/history/checkout_id/orders", controller.GetSelectedOrder) // Ihsan
+	e.GET("/history/:checkout_id/orders", controller.GetSelectedOrder) // Ihsan
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")
@@ -49,8 +49,8 @@ func New(e *echo.Echo) {
 	r.POST("/checkout", controller.CheckoutTransaction)
 
 	//--------------------------History-------------------------//
-	r.GET("/history?status=progress", controller.GetCheckoutStatusInProgress) // Ihsan
-	r.GET("/history?status=completed", controller.GetCheckoutStatusComplete)  // ihsan
+	r.GET("/checkout/:checkout_id/history?status=progress", controller.GetCheckoutStatusInProgress) // Ihsan
+	r.GET("/checkout/:checkout_id/history?status=completed", controller.GetCheckoutStatusComplete)  // ihsan
 
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer) //Riska
