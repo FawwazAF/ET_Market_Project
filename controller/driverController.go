@@ -40,8 +40,14 @@ func RegisterDriver(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Name  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_driver.ID,
 		Email: data_driver.Email,
 		Name:  data_driver.Name,
@@ -74,8 +80,14 @@ func LoginDriver(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Token string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_driver.ID,
 		Email: data_driver.Email,
 		Token: data_driver.Token,
@@ -109,8 +121,16 @@ func GetDetailDriver(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      data_driver.ID,
 		Email:   data_driver.Email,
 		Name:    data_driver.Name,
@@ -176,8 +196,16 @@ func UpdateDriver(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      updated_driver.ID,
 		Email:   updated_driver.Email,
 		Name:    updated_driver.Name,
@@ -221,8 +249,16 @@ func LogoutDriver(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      driver_updated.ID,
 		Email:   driver_updated.Email,
 		Name:    driver_updated.Name,

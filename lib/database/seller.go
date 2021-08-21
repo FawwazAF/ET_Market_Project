@@ -171,27 +171,22 @@ func GetSellerIdByOderId(order_id int) (int, error) {
 	return seller_id, err
 }
 
-// func GetHPSeller(checkout_id, seller_id int) (interface{}, error) {
-// 	fmt.Println(checkout_id)
-// 	fmt.Println(seller_id)
-// 	var seller models.Seller
-// 	var err error
-// 	// if err = config.DB.Model(&seller).Select("sellers.hp").Joins("join products on products.seller_id = sellers.id").Joins("join orders on products.id = orders.product_id").Joins("join checkout on orders.checkout_id = checkouts.id").Where("checkouts.status = ? AND checkouts.id = ? AND sellers.id = ?", "searching", checkout_id, seller_id).Group("checkouts.id").Error; err != nil {
-// 	// 	return nil, err
-// 	// }
-// 	if err = config.DB.Raw("SELECT sellers.hp FROM sellers, products, orders, checkouts WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.status = 'searching' AND checkouts.id = ? AND sellers.id = ? GROUP BY checkout_id", checkout_id, seller_id).Scan(&seller).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	fmt.Println(seller)
-// 	return seller.Hp, err
-// }
+/*
+Author: Riska
+This function for get seller by checkout id
+*/
+func GetSellerByCheckoutId(checkout_id uint) models.Seller {
+	var seller models.Seller
+	config.DB.Raw("SELECT sellers.* from checkouts, orders, products, sellers WHERE checkouts.id = orders.id AND orders.product_id = products.id AND products.seller_id = sellers.id AND checkouts.id = ?", checkout_id).Scan(&seller)
 
-// func GetNameSeller(checkout_id, seller_id int) (interface{}, error) {
-// 	var seller models.Seller
-// 	var err error
-// 	if err = config.DB.Raw("SELECT sellers.name FROM sellers, products, orders, checkouts WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.status = 'searching' AND checkouts.id = ? AND sellers.id = ? GROUP BY checkout_id", checkout_id, seller_id).Scan(&seller).Error; err != nil {
-// 		return nil, err
-// 	}
+	return seller
+}
 
-// 	return seller.Name, err
-// }
+func GetHPSeller(checkout_id uint, seller_id uint) (int64, error) {
+	var seller int64
+	var err error
+	if err = config.DB.Raw("SELECT sellers.hp FROM sellers, products, orders, checkouts WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.status = 'searching' AND checkouts.id = ? AND sellers.id = ? GROUP BY checkout_id", checkout_id, seller_id).Scan(&seller).Error; err != nil {
+		return seller, err
+	}
+	return seller, err
+}

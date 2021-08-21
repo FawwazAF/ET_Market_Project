@@ -9,8 +9,10 @@ import (
 	"html/template"
 	"net/http"
 	"net/smtp"
+	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/vonage/vonage-go-sdk"
 )
 
 //Fawwaz
@@ -58,11 +60,17 @@ func CheckoutTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	seller := database.GetSellerByCheckoutId(new_checkout.ID)
+
 	SendEmail(new_checkout.ID, logged_in_user_id)
-	// SendNotifSms(int(new_checkout.ID), logged_in_user_id)
+	SendNotifSms(new_checkout.ID, seller.ID, seller.Name)
 	return c.JSON(http.StatusOK, new_checkout)
 }
 
+/*
+Riska
+This function for send email notification for customer that the purchase is success
+*/
 func SendEmail(checkout_id uint, customer_id int) {
 	email_customer, _ := database.GetEmailCustomerById(customer_id)
 	customer, _ := database.GetCustomer(customer_id)
@@ -70,10 +78,6 @@ func SendEmail(checkout_id uint, customer_id int) {
 	total_price := database.GetTotalPrice(checkout_id)
 
 	list_order, _ := database.GetListOrderOnCheckoutForCustomer(checkout_id)
-	fmt.Println(list_order)
-	fmt.Println("len", len(list_order))
-	// fmt.Println(total_price)
-
 	// Sender data.
 	from := "etmarket.group3@gmail.com"
 	password := "etmarket2021"
@@ -115,8 +119,6 @@ func SendEmail(checkout_id uint, customer_id int) {
 		show_list = append(show_list, new_array)
 	}
 
-	fmt.Println("show_list \n", show_list)
-
 	t.Execute(&body, struct {
 		Name       string
 		TotalPrice int
@@ -136,25 +138,25 @@ func SendEmail(checkout_id uint, customer_id int) {
 	fmt.Println("Email Sent!")
 }
 
-// func SendNotifSms(checkout_id, seller_id int) {
-// 	fmt.Println("checkout_id ", checkout_id)
-// 	fmt.Println("seller_id ", seller_id)
-// 	hp_seller, _ := database.GetHPSeller(checkout_id, seller_id)
-// 	name_seller, _ := database.GetNameSeller(checkout_id, seller_id)
+/*
+Riska
+This function for send notif sms for seller
+*/
+func SendNotifSms(checkout_id uint, seller_id uint, seller_name string) {
+	hp_seller, _ := database.GetHPSeller(checkout_id, seller_id)
+	hp := strconv.FormatInt(hp_seller, 10)
 
-// 	fmt.Println("hp_seller ", hp_seller)
-// 	fmt.Println("name_seller ", name_seller)
-// 	// 	// auth := vonage.CreateAuthFromKeySecret("3b4ad40f", "JxF6ztscitiJSqKO")
-// 	// 	// smsClient := vonage.NewSMSClient(auth)
-// 	// 	// response, errResp, err := smsClient.Send("6281296645463", "6281211732575", "Hello, test test. This is riska, try to send sms via nexmo", vonage.SMSOpts{})
+	auth := vonage.CreateAuthFromKeySecret("3b4ad40f", "JxF6ztscitiJSqKO")
+	smsClient := vonage.NewSMSClient(auth)
+	response, errResp, err := smsClient.Send(hp, hp, "Hai. Ada pesanan baru dari pelanggan. Silahkan cek aplikasimu", vonage.SMSOpts{})
 
-// 	// 	// if err != nil {
-// 	// 	// 	panic(err)
-// 	// 	// }
+	if err != nil {
+		panic(err)
+	}
 
-// 	// 	// if response.Messages[0].Status == "0" {
-// 	// 	// 	fmt.Println("Account Balance: " + response.Messages[0].RemainingBalance)
-// 	// 	// } else {
-// 	// 	// 	fmt.Println("Error code " + errResp.Messages[0].Status + ": " + errResp.Messages[0].ErrorText)
-// 	// 	// }
-// }
+	if response.Messages[0].Status == "0" {
+		fmt.Println("Sms sent. Account Balance: " + response.Messages[0].RemainingBalance)
+	} else {
+		fmt.Println("Error code " + errResp.Messages[0].Status + ": " + errResp.Messages[0].ErrorText)
+	}
+}

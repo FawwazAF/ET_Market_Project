@@ -54,8 +54,14 @@ func RegisterCustomer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Name  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_customer.ID,
 		Email: data_customer.Email,
 		Name:  data_customer.Name,
@@ -88,8 +94,14 @@ func LoginCustomer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Token string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_customer.ID,
 		Email: data_customer.Email,
 		Token: data_customer.Token,
@@ -124,8 +136,16 @@ func GetDetailCustomer(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      data_customer.ID,
 		Email:   data_customer.Email,
 		Name:    data_customer.Name,
@@ -195,8 +215,16 @@ func UpdateCustomer(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      updated_customer.ID,
 		Email:   updated_customer.Email,
 		Name:    updated_customer.Name,
@@ -240,8 +268,16 @@ func LogoutCustomer(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      customer_updated.ID,
 		Email:   customer_updated.Email,
 		Name:    customer_updated.Name,

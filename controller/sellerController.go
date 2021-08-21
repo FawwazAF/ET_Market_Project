@@ -12,17 +12,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-// func Authorized(c echo.Context) (bool, models.Seller) {
-// 	seller_id := middlewares.ExtractToken(c)
-// 	token := database.GetTokenSeller(seller_id)
-// 	seller, _ := database.GetSeller(seller_id)
-
-// 	if seller.Token != token {
-// 		return false, seller
-// 	}
-// 	return true, seller
-// }
-
 /*
 Author: Riska
 This function for register seller
@@ -51,8 +40,14 @@ func RegisterSeller(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Name  string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_seller.ID,
 		Email: data_seller.Email,
 		Name:  data_seller.Name,
@@ -85,8 +80,14 @@ func LoginSeller(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	type Output struct {
+		ID    uint
+		Email string
+		Token string
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:    data_seller.ID,
 		Email: data_seller.Email,
 		Token: data_seller.Token,
@@ -122,13 +123,23 @@ func GetDetailSeller(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      data_seller.ID,
 		Email:   data_seller.Email,
 		Name:    data_seller.Name,
 		Address: data_seller.Address,
 		Gender:  data_seller.Gender,
+		Hp:      data_seller.Hp,
 	}
 
 	return c.JSON(http.StatusOK, output)
@@ -194,13 +205,23 @@ func UpdateSeller(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      updated_seller.ID,
 		Email:   updated_seller.Email,
 		Name:    updated_seller.Name,
 		Address: updated_seller.Address,
 		Gender:  updated_seller.Gender,
+		Hp:      updated_seller.Hp,
 	}
 
 	return c.JSON(http.StatusOK, output)
@@ -359,8 +380,17 @@ func EditStatusItemOrder(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID         uint
+		CheckoutID uint
+		ProductID  uint
+		Qty        int
+		Price      int
+		Status     string
+	}
+
 	//set output data
-	output := models.Order{
+	output := Output{
 		ID:         update_status.ID,
 		CheckoutID: update_status.CheckoutID,
 		ProductID:  update_status.ProductID,
@@ -405,13 +435,23 @@ func LogoutSeller(c echo.Context) error {
 		})
 	}
 
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
 	//set output data
-	output := models.Customer{
+	output := Output{
 		ID:      seller_updated.ID,
 		Email:   seller_updated.Email,
 		Name:    seller_updated.Name,
 		Address: seller_updated.Address,
 		Gender:  seller_updated.Gender,
+		Hp:      seller_updated.Hp,
 	}
 
 	return c.JSON(http.StatusOK, output)
