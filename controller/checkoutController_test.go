@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"etmarket/project/config"
+	"etmarket/project/constants"
 	"etmarket/project/middlewares"
 	"etmarket/project/models"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/labstack/echo/middleware"
 
 	"github.com/stretchr/testify/assert"
 
@@ -116,12 +118,13 @@ func TestCheckoutTransaction(t *testing.T) {
 	}
 	body, _ := json.Marshal(reqBody)
 	token, _ := middlewares.CreateToken(int(customer.ID))
+	bearer := "Bearer" + token
 	// setting controller
 	e := echo.New()
 	r := ioutil.NopCloser(bytes.NewReader(body))
+	e.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 	req := httptest.NewRequest(http.MethodPost, "/", r)
-	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	req.Header.Add("Authorization", bearer)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
 	context.SetPath("/checkout")
