@@ -47,9 +47,9 @@ func GetItemOrderByOrderId(order_id int) (models.Order, error) {
 Author: Riska
 This function for update item status on table order
 */
-func EditItemStatus(order models.Order) (interface{}, error) {
+func EditItemStatus(order models.Order) (models.Order, error) {
 	if err := config.DB.Save(&order).Error; err != nil {
-		return nil, err
+		return order, err
 	}
 	return order, nil
 }

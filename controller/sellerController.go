@@ -12,17 +12,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-// func Authorized(c echo.Context) (bool, models.Seller) {
-// 	seller_id := middlewares.ExtractToken(c)
-// 	token := database.GetTokenSeller(seller_id)
-// 	seller, _ := database.GetSeller(seller_id)
-
-// 	if seller.Token != token {
-// 		return false, seller
-// 	}
-// 	return true, seller
-// }
-
 /*
 Author: Riska
 This function for register seller
@@ -51,10 +40,20 @@ func RegisterSeller(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success create new seller",
-		"user":    data_seller,
-	})
+	type Output struct {
+		ID    uint
+		Email string
+		Name  string
+	}
+
+	//set output data
+	output := Output{
+		ID:    data_seller.ID,
+		Email: data_seller.Email,
+		Name:  data_seller.Name,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -81,10 +80,20 @@ func LoginSeller(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "succes login as a seller",
-		"users":  data_seller,
-	})
+	type Output struct {
+		ID    uint
+		Email string
+		Token string
+	}
+
+	//set output data
+	output := Output{
+		ID:    data_seller.ID,
+		Email: data_seller.Email,
+		Token: data_seller.Token,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -113,9 +122,27 @@ func GetDetailSeller(c echo.Context) error {
 			"message": "Cannot find seller",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"seller": data_seller,
-	})
+
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
+	//set output data
+	output := Output{
+		ID:      data_seller.ID,
+		Email:   data_seller.Email,
+		Name:    data_seller.Name,
+		Address: data_seller.Address,
+		Gender:  data_seller.Gender,
+		Hp:      data_seller.Hp,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -177,10 +204,27 @@ func UpdateSeller(c echo.Context) error {
 			"message": "cannot update data",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":     "success update seller",
-		"data seller": updated_seller,
-	})
+
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
+	//set output data
+	output := Output{
+		ID:      updated_seller.ID,
+		Email:   updated_seller.Email,
+		Name:    updated_seller.Name,
+		Address: updated_seller.Address,
+		Gender:  updated_seller.Gender,
+		Hp:      updated_seller.Hp,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 // Ihsan
@@ -290,9 +334,7 @@ func GetAllOrders(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"data": list_product,
-	})
+	return c.JSON(http.StatusOK, list_product)
 }
 
 /*
@@ -338,9 +380,26 @@ func EditStatusItemOrder(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"data": update_status,
-	})
+	type Output struct {
+		ID         uint
+		CheckoutID uint
+		ProductID  uint
+		Qty        int
+		Price      int
+		Status     string
+	}
+
+	//set output data
+	output := Output{
+		ID:         update_status.ID,
+		CheckoutID: update_status.CheckoutID,
+		ProductID:  update_status.ProductID,
+		Qty:        update_status.Qty,
+		Price:      update_status.Price,
+		Status:     update_status.Status,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -348,13 +407,20 @@ Author: Riska
 This function for logout seller
 */
 func LogoutSeller(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("seller_id"))
+	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id",
 		})
 	}
-	logout, err := database.GetSeller(id)
+
+	//check otorisasi
+	logged_in_user_id := middlewares.ExtractToken(c)
+	if logged_in_user_id != seller_id {
+		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to logout")
+	}
+
+	logout, err := database.GetSeller(seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
@@ -368,8 +434,25 @@ func LogoutSeller(c echo.Context) error {
 			"message": "cannot logout",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Logout success!",
-		"data":    seller_updated,
-	})
+
+	type Output struct {
+		ID      uint
+		Email   string
+		Name    string
+		Address string
+		Gender  string
+		Hp      int64
+	}
+
+	//set output data
+	output := Output{
+		ID:      seller_updated.ID,
+		Email:   seller_updated.Email,
+		Name:    seller_updated.Name,
+		Address: seller_updated.Address,
+		Gender:  seller_updated.Gender,
+		Hp:      seller_updated.Hp,
+	}
+
+	return c.JSON(http.StatusOK, output)
 }

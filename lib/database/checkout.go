@@ -102,3 +102,33 @@ func AutoUpdateStock(cart models.Cart) error {
 	}
 	return nil
 }
+
+type Result struct {
+	Name      string
+	Price     int
+	ProductID int
+	Qty       int
+}
+
+func GetListOrderOnCheckoutForCustomer(checkout_id uint) ([]Result, error) {
+
+	rows, err := config.DB.Model(&Result{}).Raw("SELECT orders.checkout_id, orders.product_id, orders.qty, orders.price, products.name FROM checkouts, orders, products WHERE checkouts.id = orders.checkout_id AND orders.product_id = products.id AND checkouts.id = ?", checkout_id).Rows()
+
+	defer rows.Close()
+
+	var result []Result
+	for rows.Next() {
+		// ScanRows scan a row into user
+		config.DB.ScanRows(rows, &result)
+
+		// do something
+	}
+
+	return result, err
+}
+
+func GetTotalPrice(checkout_id uint) int {
+	var checkout models.Checkout
+	config.DB.Find(&checkout, "id=?", checkout_id)
+	return checkout.TotalPrice
+}

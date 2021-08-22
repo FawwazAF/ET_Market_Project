@@ -10,47 +10,33 @@ import (
 Author: Riska
 This function for register customer
 */
-func CreateSeller(seller models.Seller) (interface{}, error) {
+func CreateSeller(seller models.Seller) (models.Seller, error) {
 	if err := config.DB.Save(&seller).Error; err != nil {
-		return nil, err
+		return seller, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":    seller.ID,
-		"email": seller.Email,
-		"name":  seller.Name,
-	}
-
-	return output, nil
+	return seller, nil
 }
 
 /*
 Author: Riska
 This function for login customer with matching data from database
 */
-func LoginSeller(email string) (interface{}, error) {
+func LoginSeller(email string) (models.Seller, error) {
 	var seller models.Seller
 	var err error
 	if err = config.DB.Where("email = ?", email).First(&seller).Error; err != nil {
-		return nil, err
+		return seller, err
 	}
 	seller.Token, err = middlewares.CreateToken(int(seller.ID))
 	if err != nil {
-		return nil, err
+		return seller, err
 	}
 	if err := config.DB.Save(seller).Error; err != nil {
-		return nil, err
+		return seller, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":    seller.ID,
-		"email": seller.Email,
-		"token": seller.Token,
-	}
-
-	return output, nil
+	return seller, nil
 }
 
 /*
@@ -91,21 +77,13 @@ func CheckEmailOnSeller(email string) (interface{}, error) {
 Author: Riska
 This function for get 1 specified customer with interface output
 */
-func GetSellerById(seller_id int) (interface{}, error) {
+func GetSellerById(seller_id int) (models.Seller, error) {
 	var seller models.Seller
 	if err := config.DB.Where("id=?", seller_id).First(&seller).Error; err != nil {
-		return nil, err
-	}
-	//set output data
-	output := map[string]interface{}{
-		"id":     seller.ID,
-		"email":  seller.Email,
-		"name":   seller.Name,
-		"alamat": seller.Address,
-		"gender": seller.Gender,
+		return seller, err
 	}
 
-	return output, nil
+	return seller, nil
 }
 
 /*
@@ -138,21 +116,12 @@ func GetEmailSellerById(seller_id int) (string, error) {
 Author: Riska
 This function for update customer info from database
 */
-func UpdateSeller(seller models.Seller) (interface{}, error) {
+func UpdateSeller(seller models.Seller) (models.Seller, error) {
 	if err := config.DB.Save(&seller).Error; err != nil {
-		return nil, err
+		return seller, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":     seller.ID,
-		"name":   seller.Name,
-		"email":  seller.Email,
-		"alamat": seller.Address,
-		"gender": seller.Gender,
-	}
-
-	return output, nil
+	return seller, nil
 }
 
 func GetAllSellerProduct(seller_id int) (interface{}, error) {
@@ -200,4 +169,24 @@ func GetSellerIdByOderId(order_id int) (int, error) {
 	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products_id AND orders.id = ?", order_id).Scan(&seller_id)
 
 	return seller_id, err
+}
+
+/*
+Author: Riska
+This function for get seller by checkout id
+*/
+func GetSellerByCheckoutId(checkout_id uint) models.Seller {
+	var seller models.Seller
+	config.DB.Raw("SELECT sellers.* from checkouts, orders, products, sellers WHERE checkouts.id = orders.id AND orders.product_id = products.id AND products.seller_id = sellers.id AND checkouts.id = ?", checkout_id).Scan(&seller)
+
+	return seller
+}
+
+func GetHPSeller(checkout_id uint, seller_id uint) (int64, error) {
+	var seller int64
+	var err error
+	if err = config.DB.Raw("SELECT sellers.hp FROM sellers, products, orders, checkouts WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.status = 'searching' AND checkouts.id = ? AND sellers.id = ? GROUP BY checkout_id", checkout_id, seller_id).Scan(&seller).Error; err != nil {
+		return seller, err
+	}
+	return seller, err
 }
