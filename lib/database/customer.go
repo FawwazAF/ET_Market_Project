@@ -10,47 +10,33 @@ import (
 Author: Riska
 This function for register customer
 */
-func CreateCustomer(customer models.Customer) (interface{}, error) {
+func CreateCustomer(customer models.Customer) (models.Customer, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
-		return nil, err
+		return customer, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":    customer.ID,
-		"email": customer.Email,
-		"name":  customer.Name,
-	}
-
-	return output, nil
+	return customer, nil
 }
 
 /*
 Author: Riska
 This function for login customer with matching data from database
 */
-func LoginCustomer(email string) (interface{}, error) {
+func LoginCustomer(email string) (models.Customer, error) {
 	var customer models.Customer
 	var err error
 	if err = config.DB.Where("email = ?", email).First(&customer).Error; err != nil {
-		return nil, err
+		return customer, err
 	}
 	customer.Token, err = middlewares.CreateToken(int(customer.ID))
 	if err != nil {
-		return nil, err
+		return customer, err
 	}
 	if err := config.DB.Save(customer).Error; err != nil {
-		return nil, err
+		return customer, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":    customer.ID,
-		"email": customer.Email,
-		"token": customer.Token,
-	}
-
-	return output, nil
+	return customer, nil
 }
 
 /*
@@ -81,22 +67,13 @@ func CheckEmailOnCustomer(email string) (interface{}, error) {
 Author: Riska
 This function for get 1 specified customer with interface output
 */
-func GetCustomerById(customer_id int) (interface{}, error) {
+func GetCustomerById(customer_id int) (models.Customer, error) {
 	var customer models.Customer
 	if err := config.DB.Where("id=?", customer_id).First(&customer).Error; err != nil {
-		return nil, err
+		return customer, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":     customer.ID,
-		"email":  customer.Email,
-		"name":   customer.Name,
-		"alamat": customer.Address,
-		"gender": customer.Gender,
-	}
-
-	return output, nil
+	return customer, nil
 }
 
 /*
@@ -129,20 +106,10 @@ func GetEmailCustomerById(customer_id int) (string, error) {
 Author: Riska
 This function for update customer info from database
 */
-func UpdateCustomer(customer models.Customer) (interface{}, error) {
+func UpdateCustomer(customer models.Customer) (models.Customer, error) {
 	if err := config.DB.Save(&customer).Error; err != nil {
-		return nil, err
+		return customer, err
 	}
 
 	return customer, nil
-	//set output data
-	output := map[string]interface{}{
-		"id":     customer.ID,
-		"name":   customer.Name,
-		"email":  customer.Email,
-		"alamat": customer.Address,
-		"gender": customer.Gender,
-	}
-
-	return output, nil
 }

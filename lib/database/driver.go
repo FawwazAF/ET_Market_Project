@@ -6,26 +6,26 @@ import (
 	"etmarket/project/models"
 )
 
-func CreateDriver(driver models.Driver) (interface{}, error) {
+func CreateDriver(driver models.Driver) (models.Driver, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
-		return nil, err
+		return driver, err
 	}
 	return driver, nil
 }
 
 //login driver with matching data from database
-func LoginDriver(email string) (interface{}, error) {
+func LoginDriver(email string) (models.Driver, error) {
 	var driver models.Driver
 	var err error
 	if err = config.DB.Where("email = ?", email).First(&driver).Error; err != nil {
-		return nil, err
+		return driver, err
 	}
 	driver.Token, err = middlewares.CreateToken(int(driver.ID))
 	if err != nil {
-		return nil, err
+		return driver, err
 	}
 	if err := config.DB.Save(driver).Error; err != nil {
-		return nil, err
+		return driver, err
 	}
 	return driver, err
 }
@@ -50,22 +50,13 @@ func CheckEmailOnDriver(email string) (interface{}, error) {
 	return driver, nil
 }
 
-func GetDriverById(driver_id int) (interface{}, error) {
+func GetDriverById(driver_id int) (models.Driver, error) {
 	var driver models.Driver
 	if err := config.DB.Where("id=?", driver_id).First(&driver).Error; err != nil {
-		return nil, err
+		return driver, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":     driver.ID,
-		"email":  driver.Email,
-		"name":   driver.Name,
-		"alamat": driver.Address,
-		"gender": driver.Gender,
-	}
-
-	return output, nil
+	return driver, nil
 }
 
 //get 1 specified driver with Driver struct output
@@ -89,19 +80,10 @@ func GetEmailDriverById(driver_id int) (string, error) {
 }
 
 //update driver info from database
-func UpdateDriver(driver models.Driver) (interface{}, error) {
+func UpdateDriver(driver models.Driver) (models.Driver, error) {
 	if err := config.DB.Save(&driver).Error; err != nil {
-		return nil, err
+		return driver, err
 	}
 
-	//set output data
-	output := map[string]interface{}{
-		"id":     driver.ID,
-		"name":   driver.Name,
-		"email":  driver.Email,
-		"alamat": driver.Address,
-		"gender": driver.Gender,
-	}
-
-	return output, nil
+	return driver, nil
 }

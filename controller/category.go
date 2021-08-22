@@ -9,15 +9,17 @@ import (
 	"github.com/labstack/echo"
 )
 
+/*
+Author: Riska
+Getting all categories for register seller
+*/
 func GetAllCategories(c echo.Context) error {
 	categories, err := database.GetAllCategories()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"users":  categories,
-	})
+
+	return c.JSON(http.StatusOK, categories)
 }
 
 /*

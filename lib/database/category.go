@@ -5,10 +5,10 @@ import (
 	"etmarket/project/models"
 )
 
-func GetAllCategories() (interface{}, error) {
+func GetAllCategories() ([]models.Category, error) {
 	var categories []models.Category
 	if err := config.DB.Find(&categories).Error; err != nil {
-		return nil, err
+		return categories, err
 	}
 	return categories, nil
 }
