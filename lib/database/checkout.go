@@ -8,8 +8,17 @@ import (
 
 func FindCarts(customer_id int) ([]models.Cart, error) {
 	var carts []models.Cart
+	var product []models.Product
 	if err := config.DB.Find(&carts, "customer_id=?", customer_id).Error; err != nil {
 		return carts, err
+	}
+	for i, v := range carts {
+		if err := config.DB.Find(&product, "id=?", v.ProductID).Error; err != nil {
+			return carts, err
+		}
+		if product[i].Stock < v.Qty {
+			return carts, errors.New("stock is empty")
+		}
 	}
 	return carts, nil
 }
@@ -25,7 +34,7 @@ func CartMigrate(id, checkout_id int) error {
 	}
 
 	//iterative save from cart to order
-	for _, v := range carts {
+	for i, v := range carts {
 		order = models.Order{
 			Qty:        v.Qty,
 			Price:      v.Price,
@@ -34,6 +43,9 @@ func CartMigrate(id, checkout_id int) error {
 			Status:     "progress",
 		}
 		if err := config.DB.Save(&order).Error; err != nil {
+			return err
+		}
+		if err := AutoUpdateStock(carts[i]); err != nil {
 			return err
 		}
 	}
@@ -74,6 +86,18 @@ func DeleteCart(id int) error {
 		return err
 	}
 	if err := config.DB.Unscoped().Delete(&carts, "customer_id=?", id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func AutoUpdateStock(cart models.Cart) error {
+	var product models.Product
+	if err := config.DB.Find(&product, "id=?", cart.ProductID).Error; err != nil {
+		return err
+	}
+	product.Stock = product.Stock - cart.Qty
+	if err := config.DB.Save(product).Error; err != nil {
 		return err
 	}
 	return nil

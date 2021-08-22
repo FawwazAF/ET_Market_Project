@@ -94,7 +94,7 @@ func TestGetSpecificMarket(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody), &response)
 
-	t.Run("GET /markets", func(t *testing.T) {
+	t.Run("GET /markets/:market_name", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, uint(1), response[0].ID)
 		assert.Equal(t, "pasar baru", response[0].Name)
