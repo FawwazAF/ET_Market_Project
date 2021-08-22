@@ -28,3 +28,14 @@ func ExtractToken(e echo.Context) int {
 	}
 	return 0
 }
+
+// func ExtractToken(e echo.Context) int {
+// 	if temp := e.Get("user"); temp != nil {
+// 		user := e.Get("user").(*jwt.Token)
+// 		if user.Valid {
+// 			claims := user.Claims.(jwt.MapClaims)
+// 			return int(claims["userId"].(float64))
+// 		}
+// 	}
+// 	return 0
+// }
