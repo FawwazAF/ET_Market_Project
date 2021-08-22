@@ -9,9 +9,13 @@ import (
 Author: Patmiza
 Getting all categories of seller in a market
 */
-func GetAllProgressOrders(driver_id int) (interface{}, error) {
+func GetAllProgressOrders(driver_id, checkout_id int) (interface{}, error) {
+	var checkout models.Checkout
 	var orders []models.Order
-	if err := config.DB.Find(&orders, "driver_id = ? AND status = ?", driver_id, "progress").Error; err != nil {
+	if err := config.DB.Find(&checkout, "driver_id = ? AND id = ?", driver_id, checkout_id).Error; err != nil {
+		return nil, err
+	}
+	if err := config.DB.Find(&orders, "checkout_id = ? AND status = ?", checkout_id, "progress").Error; err != nil {
 		return nil, err
 	}
 	return orders, nil

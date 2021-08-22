@@ -306,10 +306,15 @@ func EditSellerProduct(c echo.Context) error {
 		})
 	}
 
-	product := models.Product{}
+	product, err := database.GetEditProduct(logged_in_user_id, product_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "cannot get data",
+		})
+	}
 	c.Bind(&product)
 
-	product_edited, err := database.EditSellerProduct(seller_id, product_id, product)
+	product_edited, err := database.EditSellerProduct(product)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "cannot edit product",

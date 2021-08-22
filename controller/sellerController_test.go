@@ -37,8 +37,7 @@ var (
 
 func AddSellerData() bool {
 	seller := models.Seller{Name: "Riska", Email: "riska@gmail.com", Password: "$2a$12$S/cx.8/YvBHtbDrRsrd/DumMTsM4M3St0wWP1uonsBZysDw6Hk7Mm"}
-	err := config.DB.Debug().Create(&seller)
-	if err != nil {
+	if err := config.DB.Debug().Create(&seller); err != nil {
 		return false
 	}
 	return true

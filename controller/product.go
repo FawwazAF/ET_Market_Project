@@ -58,7 +58,7 @@ func GetDetailSpecificProduct(c echo.Context) error {
 			"message": "invalid id shop",
 		})
 	}
-	product_id, err := strconv.Atoi(c.QueryParam("product_id"))
+	product_id, err := strconv.Atoi(c.Param("product_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid id product",

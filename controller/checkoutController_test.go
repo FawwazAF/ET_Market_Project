@@ -90,6 +90,9 @@ func TestCheckoutTransaction(t *testing.T) {
 	newProduct.ID = 1
 	newProduct.Name = "bawang"
 	newProduct.Price = 1000
+	newProduct.Stock = 25
+	newProduct.Description = "jual /ons"
+	newProduct.SellerID = uint(1)
 	if err := db.Save(&newProduct).Error; err != nil {
 		t.Error(err)
 	}

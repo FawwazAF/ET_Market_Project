@@ -139,8 +139,16 @@ func AddProductToSeller(product models.Product) (models.Product, error) {
 	return product, nil
 }
 
-func EditSellerProduct(product_id int, seller_id int, product models.Product) (models.Product, error) {
-	if err := config.DB.Where(&product, "id = ? AND seller_id = ?", product_id, seller_id).Save(&product).Error; err != nil {
+func GetEditProduct(seller_id, product_id int) (models.Product, error) {
+	var product models.Product
+	if err := config.DB.Find(&product, "id=? AND seller_id=?", product_id, seller_id).Error; err != nil {
+		return product, err
+	}
+	return product, nil
+}
+
+func EditSellerProduct(product models.Product) (models.Product, error) {
+	if err := config.DB.Save(&product).Error; err != nil {
 		return product, err
 	}
 	return product, nil

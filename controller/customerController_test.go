@@ -39,8 +39,7 @@ var (
 
 func AddCustomerData() bool {
 	customer := models.Customer{Name: "Riska", Email: "riska@gmail.com", Password: "$2a$12$S/cx.8/YvBHtbDrRsrd/DumMTsM4M3St0wWP1uonsBZysDw6Hk7Mm", Address: "Jl Bogor Raya", Gender: "F"}
-	err := config.DB.Debug().Create(&customer)
-	if err != nil {
+	if err := config.DB.Debug().Create(&customer); err != nil {
 		return false
 	}
 	return true
