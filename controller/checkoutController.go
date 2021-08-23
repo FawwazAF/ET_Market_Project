@@ -49,7 +49,24 @@ func CheckoutTransaction(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
+	type Response struct {
+		ID            uint
+		TotalQty      int    `json:"total_qty"`
+		TotalPrice    int    `json:"total_price"`
+		CustomerID    uint   `json:"customer_id"`
+		PaymentID     uint   `json:"payment_id"`
+		Status        string `json:"status" gorm:"type:enum('searching', 'delivery', 'completed')"`
+		DeliveryPrice int    `json:"delivery_price"`
+	}
+	response := Response{
+		ID:            new_checkout.ID,
+		TotalQty:      new_checkout.TotalQty,
+		TotalPrice:    new_checkout.TotalPrice,
+		CustomerID:    new_checkout.CustomerID,
+		PaymentID:     new_checkout.PaymentID,
+		Status:        new_checkout.Status,
+		DeliveryPrice: 5000,
+	}
 	//Migrate data from cart to order
 	if err := database.CartMigrate(logged_in_user_id, int(new_checkout.ID)); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -64,7 +81,7 @@ func CheckoutTransaction(c echo.Context) error {
 
 	SendEmail(new_checkout.ID, logged_in_user_id)
 	SendNotifSms(new_checkout.ID, seller.ID, seller.Name)
-	return c.JSON(http.StatusOK, new_checkout)
+	return c.JSON(http.StatusOK, response)
 }
 
 /*
@@ -151,7 +168,8 @@ func SendNotifSms(checkout_id uint, seller_id uint, seller_name string) {
 	response, errResp, err := smsClient.Send(hp, hp, "Hai. Ada pesanan baru dari pelanggan. Silahkan cek aplikasimu", vonage.SMSOpts{})
 
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	if response.Messages[0].Status == "0" {
@@ -159,4 +177,27 @@ func SendNotifSms(checkout_id uint, seller_id uint, seller_name string) {
 	} else {
 		fmt.Println("Error code " + errResp.Messages[0].Status + ": " + errResp.Messages[0].ErrorText)
 	}
+}
+
+//Fawwaz
+//Finish a checkout
+func FinishTransaction(c echo.Context) error {
+	logged_customer_id := middlewares.ExtractToken(c)
+	if logged_customer_id == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "please login first",
+		})
+	}
+	//Check Checkout ID
+	checkout_id, err := strconv.Atoi(c.Param("checkout_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "input invalid",
+		})
+	}
+	checkout, err := database.EditCheckout(logged_customer_id, checkout_id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, checkout)
 }

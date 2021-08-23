@@ -73,7 +73,8 @@ func New(e *echo.Echo) {
 	r.DELETE("/cart/product/:product_id", controller.DeleteProductInCartsController)
 
 	//--------------------------Checkout--------------------------//
-	r.POST("/checkout", controller.CheckoutTransaction) //faw
+	r.POST("/checkout", controller.CheckoutTransaction)           //faw
+	r.PUT("/checkout/:checkout_id", controller.FinishTransaction) //faw
 
 	//--------------------------Customer--------------------------//
 	r.GET("/customer/:customer_id", controller.GetDetailCustomer)     //Riska
