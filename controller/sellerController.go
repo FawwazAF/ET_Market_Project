@@ -229,18 +229,8 @@ func UpdateSeller(c echo.Context) error {
 
 // Ihsan
 func GetSellerProducts(c echo.Context) error {
-	// convert parameter to variable
-	seller_id, err := strconv.Atoi(c.Param("seller_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid seller id",
-		})
-	}
 	// Auth
-	logged_in_user_id := middlewares.ExtractToken(c)
-	if logged_in_user_id != seller_id {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
-	}
+	seller_id := middlewares.ExtractToken(c)
 	// Get data
 	all_products_selected_seller, err := database.GetAllSellerProduct(seller_id)
 	if err != nil {
@@ -256,18 +246,8 @@ func GetSellerProducts(c echo.Context) error {
 
 // Ihsan
 func AddProductToSeller(c echo.Context) error {
-	// Convert parameter to variable
-	seller_id, err := strconv.Atoi(c.Param("seller_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid id",
-		})
-	}
 	// Auth
-	logged_in_user_id := middlewares.ExtractToken(c)
-	if logged_in_user_id != seller_id {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
-	}
+	seller_id := middlewares.ExtractToken(c)
 	// http request body
 	product := models.Product{}
 	product.SellerID = uint(seller_id)
@@ -287,18 +267,7 @@ func AddProductToSeller(c echo.Context) error {
 
 // ihsan
 func EditSellerProduct(c echo.Context) error {
-	seller_id, err := strconv.Atoi(c.Param("seller_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid seller id",
-		})
-	}
-
-	logged_in_user_id := middlewares.ExtractToken(c)
-	if logged_in_user_id != seller_id {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user unauthorized to get detail")
-	}
-
+	seller_id := middlewares.ExtractToken(c)
 	product_id, err := strconv.Atoi(c.Param("product_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -306,7 +275,7 @@ func EditSellerProduct(c echo.Context) error {
 		})
 	}
 
-	product, err := database.GetEditProduct(logged_in_user_id, product_id)
+	product, err := database.GetEditProduct(product_id, seller_id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot get data",
