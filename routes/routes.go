@@ -39,15 +39,33 @@ func New(e *echo.Echo) {
 	e.POST("/seller/login", controller.LoginSeller)       //Riska
 
 	//--------------------------History----------------------//
-	e.GET("/history/:checkout_id/orders", controller.GetSelectedOrder) // Ihsan
+	// e.GET("/history/:checkout_id/orders", controller.GetSelectedOrder) // Ihsan
 
 	//--------------------------Authorized Only--------------------------//
 	r := e.Group("")
 	r.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
 
+	//--------------------------Checkout--------------------------//
+	// r.POST("/checkout", controller.CheckoutTransaction)
+
 	//--------------------------History-------------------------//
 	r.GET("/history", controller.GetCheckoutStatusInProgress) // Ihsan
 	// r.GET("/history?status=completed", controller.GetCheckoutStatusComplete) // ihsan
+
+	//--------------------------Customer--------------------------//
+	// r.GET("/customer/:customer_id", controller.GetDetailCustomer) //Riska
+	// r.PUT("/customer/:customer_id", controller.UpdateCustomer)    //Riska
+
+	//--------------------------Seller--------------------------//
+	// r.GET("/seller/:seller_id", controller.GetDetailSeller)             //Riska
+	// r.PUT("/seller/:seller_id", controller.UpdateSeller)                //Riska
+	r.GET("/seller/products", controller.GetSellerProducts)             // Ihsan
+	r.POST("/seller/products", controller.AddProductToSeller)           // Ihsan
+	r.PUT("/seller/products/:product_id", controller.EditSellerProduct) // Ihsan
+
+	//--------------------------Driver--------------------------//
+	// r.GET("/driver/:driver_id", controller.GetDetailDriver) //Riska
+	// r.PUT("/driver/:driver_id", controller.UpdateDriver)    //Riska
 
 	//-------------------------Cart----------------------------//
 	r.POST("/seller/:seller_id/product/id/:product_id", controller.InsertProductIntoCartController)
@@ -64,14 +82,14 @@ func New(e *echo.Echo) {
 	r.PUT("/customer/logout/:customer_id", controller.LogoutCustomer) //Riska
 
 	//--------------------------Seller--------------------------//
-	r.GET("/seller/:seller_id", controller.GetDetailSeller)              //Riska
-	r.PUT("/seller/:seller_id", controller.UpdateSeller)                 //Riska
-	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)          //Riska
-	r.GET("/seller/products", controller.GetSellerProducts)              // Ihsan
-	r.POST("/seller/products", controller.AddProductToSeller)            // Ihsan
-	r.PUT("/seller/products/:product_id", controller.EditSellerProduct)  // Ihsan
+	r.GET("/seller/:seller_id", controller.GetDetailSeller) //Riska
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)    //Riska
+	// r.GET("/seller/:seller_id/products", controller.GetSellerProducts)
+	// r.POST("/seller/:seller_id/products", controller.AddProductToSeller)
+	// r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct)
 	r.GET("/seller/orderlist", controller.GetAllOrders)                  //Riska
 	r.PUT("/seller/orderlist/:order_id", controller.EditStatusItemOrder) //Riska
+	r.PUT("/seller/logout/:seller_id", controller.LogoutSeller)          //Riska
 
 	//--------------------------Driver--------------------------//
 	r.GET("/driver/orderlist", controller.GetOrderList)                  //faw
