@@ -57,11 +57,11 @@ func New(e *echo.Echo) {
 	r.PUT("/customer/:customer_id", controller.UpdateCustomer)    //Riska
 
 	//--------------------------Seller--------------------------//
-	r.GET("/seller/:seller_id", controller.GetDetailSeller)                        //Riska
-	r.PUT("/seller/:seller_id", controller.UpdateSeller)                           //Riska
-	r.GET("/seller/:seller_id/products", controller.GetSellerProducts)             // Ihsan
-	r.POST("/seller/:seller_id/products", controller.AddProductToSeller)           // Ihsan
-	r.PUT("/seller/:seller_id/products/:product_id", controller.EditSellerProduct) // Ihsan
+	r.GET("/seller/:seller_id", controller.GetDetailSeller)             //Riska
+	r.PUT("/seller/:seller_id", controller.UpdateSeller)                //Riska
+	r.GET("/seller/products", controller.GetSellerProducts)             // Ihsan
+	r.POST("/seller/products", controller.AddProductToSeller)           // Ihsan
+	r.PUT("/seller/products/:product_id", controller.EditSellerProduct) // Ihsan
 
 	//--------------------------Driver--------------------------//
 	r.GET("/driver/:driver_id", controller.GetDetailDriver) //Riska
