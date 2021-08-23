@@ -57,10 +57,10 @@ func GetAllCartsController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"Carts":  carts,
-	})
+	if len(carts) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "cart is empty")
+	}
+	return c.JSON(http.StatusOK, carts)
 }
 
 /*

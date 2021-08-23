@@ -31,10 +31,10 @@ func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.
 Author: Patmiza
 Getting all carts for spesific customer
 */
-func GetAllCarts(customer_id int) (interface{}, error) {
+func GetAllCarts(customer_id int) ([]models.Cart, error) {
 	var carts []models.Cart
 	if err := config.DB.Find(&carts, "customer_id= ?", customer_id).Error; err != nil {
-		return nil, err
+		return carts, err
 	}
 	return carts, nil
 }

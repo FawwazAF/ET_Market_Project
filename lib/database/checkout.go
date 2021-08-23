@@ -59,9 +59,10 @@ func Checkout(customer_id int, checkout models.Checkout, carts []models.Cart) (m
 		total_qty += v.Qty
 		total_price += v.Price
 	}
+	delivery_price := 5000
 	new_checkout := models.Checkout{
 		TotalQty:   total_qty,
-		TotalPrice: total_price,
+		TotalPrice: total_price + delivery_price,
 		CustomerID: uint(customer_id),
 		PaymentID:  checkout.PaymentID,
 		Status:     "searching",
@@ -131,4 +132,16 @@ func GetTotalPrice(checkout_id uint) int {
 	var checkout models.Checkout
 	config.DB.Find(&checkout, "id=?", checkout_id)
 	return checkout.TotalPrice
+}
+
+func EditCheckout(customer_id, checkout_id int) (models.Checkout, error) {
+	var checkout models.Checkout
+	if err := config.DB.Find(&checkout, "customer_id=? AND id=?", customer_id, checkout_id).Error; err != nil {
+		return checkout, err
+	}
+	checkout.Status = "completed"
+	if err := config.DB.Save(checkout).Error; err != nil {
+		return checkout, err
+	}
+	return checkout, nil
 }
