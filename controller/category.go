@@ -85,8 +85,5 @@ func GetCategoryNameMarketIdController(c echo.Context) error {
 			"message": "seller category is not found",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":       "success to get a seller category",
-		"category_name": list_seller,
-	})
+	return c.JSON(http.StatusOK, list_seller)
 }
