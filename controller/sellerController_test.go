@@ -417,7 +417,7 @@ func TestEditSellerProduct(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
-	context.SetPath("/seller/products")
+	context.SetPath("/seller/products/:product_id")
 	context.SetParamNames("product_id")
 	context.SetParamValues("1")
 
@@ -436,7 +436,7 @@ func TestEditSellerProduct(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("POST /seller/products", func(t *testing.T) {
+	t.Run("POST /seller/products/:product_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, "kangkung", response.Name)
 		assert.Equal(t, 1500, response.Price)

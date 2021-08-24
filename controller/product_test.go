@@ -101,7 +101,7 @@ func TestGetSpecificProductInShop(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
-	context.SetPath("/seller")
+	context.SetPath("/seller/:seller_id/product")
 	context.SetParamNames("seller_id")
 	context.SetParamValues("1")
 
@@ -120,7 +120,7 @@ func TestGetSpecificProductInShop(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("GET /seller/product", func(t *testing.T) {
+	t.Run("GET /seller/:seller_id/product", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, "tomat", response.Name)
 		assert.Equal(t, 1000, response.Price)
@@ -159,12 +159,9 @@ func TestGetDetailSpecificProductInShop(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
-	context.SetPath("/seller")
-	context.SetParamNames("seller_id")
-	context.SetParamValues("1")
-	context.SetPath("/product")
-	context.SetParamNames("product_id")
-	context.SetParamValues("1")
+	context.SetPath("/seller/:seller_id/product/:product_id")
+	context.SetParamNames("seller_id", "product_id")
+	context.SetParamValues("1", "1")
 
 	GetDetailSpecificProduct(context)
 
@@ -181,7 +178,7 @@ func TestGetDetailSpecificProductInShop(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("GET /seller/product", func(t *testing.T) {
+	t.Run("GET /seller/:seller_id/product/:product_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, "tomat", response.Name)
 		assert.Equal(t, 1000, response.Price)
