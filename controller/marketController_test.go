@@ -20,11 +20,13 @@ func TestGetAllMarket(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Market{})
 	db.AutoMigrate(&models.Market{})
 	// preparate dummy data
-	var newMarket models.Market
-	newMarket.Name = "pasar baru"
-	newMarket.Address = "bandung"
+	newMarket := models.Market{
+		Name:    "pasar baru",
+		Address: "bandung",
+	}
 	if err := db.Save(&newMarket).Error; err != nil {
 		t.Error(err)
 	}
@@ -43,15 +45,15 @@ func TestGetAllMarket(t *testing.T) {
 		Address string `json:"address"`
 	}
 
-	var response Response
+	var response []Response
 	resBody := res.Body.String()
 
 	json.Unmarshal([]byte(resBody), &response)
 
 	t.Run("GET /markets", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
-		assert.Equal(t, "pasar baru", response.Name)
-		assert.Equal(t, "bandung", response.Address)
+		assert.Equal(t, "pasar baru", response[0].Name)
+		assert.Equal(t, "bandung", response[0].Address)
 	})
 	db.Migrator().DropTable(&models.Market{})
 }
@@ -65,9 +67,10 @@ func TestGetSpecificMarket(t *testing.T) {
 	// cleaning data before testing
 	db.AutoMigrate(&models.Market{})
 	// preparate dummy data
-	var newMarket models.Market
-	newMarket.Name = "pasar baru"
-	newMarket.Address = "bandung"
+	newMarket := models.Market{
+		Name:    "pasar baru",
+		Address: "bandung",
+	}
 	if err := db.Save(&newMarket).Error; err != nil {
 		t.Error(err)
 	}

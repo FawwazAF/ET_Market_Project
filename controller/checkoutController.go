@@ -84,6 +84,10 @@ func CheckoutTransaction(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+func CheckoutTransactionTesting() echo.HandlerFunc {
+	return CheckoutTransaction
+}
+
 /*
 Riska
 This function for send email notification for customer that the purchase is success
@@ -200,4 +204,7 @@ func FinishTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, checkout)
+}
+func FinishTransactionTesting() echo.HandlerFunc {
+	return FinishTransaction
 }

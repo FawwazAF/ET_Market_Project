@@ -18,8 +18,8 @@ func GetAllCompletedDeliveriesController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":               "success",
-		"Completed deliveries": deliveries,
-	})
+	return c.JSON(http.StatusOK, deliveries)
+}
+func GetAllCompletedDeliveriesTesting() echo.HandlerFunc {
+	return GetAllCompletedDeliveriesController
 }

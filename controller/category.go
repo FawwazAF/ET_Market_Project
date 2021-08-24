@@ -36,35 +36,47 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 	all_shop, err := database.GetAllCategoriesMarketId(market_id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
-			"message": "shop is not found",
-		})
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":    "success to get all shops",
-		"categories": all_shop,
-	})
-}
-
-func GetSellerController(c echo.Context) error {
-	market_id, err := strconv.Atoi(c.Param("market_id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid market id",
-		})
-	}
-
-	category_name := c.Param("category_name")
-	list_seller, err := database.GetSellerbyName(market_id, category_name)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "seller is not found",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":     "success to get a seller",
-		"list Seller": list_seller,
-	})
+	type Result struct {
+		Name       string `json:"name"`
+		MarketID   uint   `json:"market_id"`
+		CategoryID uint   `json:"category_id"`
+	}
+
+	var output []Result
+	for i := 0; i < len(all_shop); i++ {
+		new_result := Result{
+			Name:       all_shop[i].Name,
+			MarketID:   all_shop[i].MarketID,
+			CategoryID: all_shop[i].CategoryID,
+		}
+		output = append(output, new_result)
+	}
+	return c.JSON(http.StatusOK, output)
 }
+
+// func GetSellerController(c echo.Context) error {
+// 	market_id, err := strconv.Atoi(c.Param("market_id"))
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+// 			"message": "invalid market id",
+// 		})
+// 	}
+
+// 	category_name := c.Param("category_name")
+// 	list_seller, err := database.GetSellerbyName(market_id, category_name)
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+// 			"message": "seller is not found",
+// 		})
+// 	}
+// 	return c.JSON(http.StatusOK, map[string]interface{}{
+// 		"message":     "success to get a seller",
+// 		"list Seller": list_seller,
+// 	})
+// }
 
 /*
 Author: Patmiza
@@ -85,5 +97,19 @@ func GetCategoryNameMarketIdController(c echo.Context) error {
 			"message": "seller category is not found",
 		})
 	}
-	return c.JSON(http.StatusOK, list_seller)
+	type Result struct {
+		ID           uint   `json:"id"`
+		Name         string `json:"name"`
+		CategoryName string `json:"category_name"`
+	}
+	var output []Result
+	for i := 0; i < len(list_seller); i++ {
+		new_result := Result{
+			ID:           list_seller[i].ID,
+			Name:         list_seller[i].Name,
+			CategoryName: list_seller[i].Category,
+		}
+		output = append(output, new_result)
+	}
+	return c.JSON(http.StatusOK, output)
 }

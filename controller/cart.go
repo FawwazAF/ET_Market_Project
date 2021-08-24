@@ -20,7 +20,7 @@ func InsertProductIntoCartController(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid customer id",
+			"message": "invalid seller id",
 		})
 	}
 
@@ -42,10 +42,10 @@ func InsertProductIntoCartController(c echo.Context) error {
 			"message": "cart is not found",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success create new cart",
-		"Cart":   new_cart,
-	})
+	return c.JSON(http.StatusOK, new_cart)
+}
+func InsertProductIntoCartTesting() echo.HandlerFunc {
+	return InsertProductIntoCartController
 }
 
 /*
@@ -61,6 +61,9 @@ func GetAllCartsController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "cart is empty")
 	}
 	return c.JSON(http.StatusOK, carts)
+}
+func GetAllCartsTesting() echo.HandlerFunc {
+	return GetAllCartsController
 }
 
 /*
@@ -81,8 +84,8 @@ func DeleteProductInCartsController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"Carts":  carts,
-	})
+	return c.JSON(http.StatusOK, carts)
+}
+func DeleteProductInCartTesting() echo.HandlerFunc {
+	return DeleteProductInCartsController
 }

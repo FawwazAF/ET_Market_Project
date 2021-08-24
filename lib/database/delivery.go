@@ -31,7 +31,7 @@ func MakeDelivery(driver_id, checkout_id int) (models.Delivery, error) {
 	if err := config.DB.Save(&delivery).Error; err != nil {
 		return delivery, err
 	}
-	checkout.Status = "progress"
+	checkout.Status = "delivery"
 	if err := config.DB.Save(checkout).Error; err != nil {
 		return delivery, err
 	}

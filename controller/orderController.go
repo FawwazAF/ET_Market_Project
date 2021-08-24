@@ -27,3 +27,6 @@ func GetAllProgressOrdersController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, orders)
 }
+func GetOrderDriverTesting() echo.HandlerFunc {
+	return GetAllProgressOrdersController
+}
