@@ -27,15 +27,36 @@ func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
 /*
 Author: Patmiza
 */
-func GetCategoryNameMarketId(market_id int, category_name string) (interface{}, error) {
-	var categories models.Category
-	var seller []models.Seller
+// func GetCategoryNameMarketId(market_id int, category_name string) (interface{}, error) {
+// 	var categories models.Category
+// 	var seller []models.Seller
+// 	search := "%" + category_name + "%"
+// 	if err := config.DB.Find(&categories, "name LIKE ?", search).Error; err != nil {
+// 		return nil, err
+// 	}
+// 	if err := config.DB.Find(&seller, "market_id=? AND category_id=?", market_id, categories.ID).Error; err != nil {
+// 		return nil, err
+// 	}
+// 	return seller, nil
+// }
+
+type SellerByCategory struct {
+	ID       uint
+	Name     string
+	Category string
+}
+
+func GetCategoryNameMarketId(market_id int, category_name string) ([]SellerByCategory, error) {
 	search := "%" + category_name + "%"
-	if err := config.DB.Find(&categories, "name LIKE ?", search).Error; err != nil {
-		return nil, err
+
+	rows, err := config.DB.Model(&Result{}).Raw("SELECT sellers.id, sellers.name, categories.name AS category FROM sellers, categories, markets WHERE categories.id = sellers.category_id AND markets.id = sellers.market_id AND categories.name LIKE ? AND markets.id = ?", search, market_id).Rows()
+
+	defer rows.Close()
+
+	var result []SellerByCategory
+	for rows.Next() {
+		config.DB.ScanRows(rows, &result)
 	}
-	if err := config.DB.Find(&seller, "market_id=? AND category_id=?", market_id, categories.ID).Error; err != nil {
-		return nil, err
-	}
-	return seller, nil
+
+	return result, err
 }

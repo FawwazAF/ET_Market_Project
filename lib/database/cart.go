@@ -9,10 +9,10 @@ import (
 Author: Patmiza
 Inserting product into cart
 */
-func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.Cart) (interface{}, error) {
+func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.Cart) (models.Cart, error) {
 	var product models.Product
 	if err := config.DB.Find(&product, "id = ? AND seller_id = ?", product_id, seller_id).Error; err != nil {
-		return nil, err
+		return carts, err
 	}
 
 	cart := models.Cart{
@@ -22,7 +22,7 @@ func InsertProductIntoCart(customer_id, seller_id, product_id int, carts models.
 		Price:      (product.Price * carts.Qty),
 	}
 	if err := config.DB.Save(&cart).Error; err != nil {
-		return nil, err
+		return cart, err
 	}
 	return cart, nil
 }
