@@ -5,7 +5,7 @@ import (
 	"etmarket/project/models"
 )
 
-func GetAllProductByShopId(seller_id int) (interface{}, error) {
+func GetAllProductByShopId(seller_id int) ([]models.Product, error) {
 	var product []models.Product
 	if err := config.DB.Find(&product, "seller_id = ?", seller_id).Error; err != nil {
 		return nil, err
@@ -13,7 +13,7 @@ func GetAllProductByShopId(seller_id int) (interface{}, error) {
 	return product, nil
 }
 
-func GetSpecificProductByShopId(seller_id int, product_name string) (interface{}, error) {
+func GetSpecificProductByShopId(seller_id int, product_name string) ([]models.Product, error) {
 	var product []models.Product
 	search := "%" + product_name
 	if err := config.DB.Find(&product, "seller_id = ? AND name LIKE ?", seller_id, search).Error; err != nil {
@@ -22,10 +22,10 @@ func GetSpecificProductByShopId(seller_id int, product_name string) (interface{}
 	return product, nil
 }
 
-func GetSpecificProductById(seller_id int, product_id int) (interface{}, error) {
-	var product []models.Product
+func GetSpecificProductById(seller_id int, product_id int) (models.Product, error) {
+	var product models.Product
 	if err := config.DB.Find(&product, "seller_id = ? AND id = ?", seller_id, product_id).Error; err != nil {
-		return nil, err
+		return product, err
 	}
 	return product, nil
 }
