@@ -20,6 +20,7 @@ func TestGetAllProductInShop(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Product{})
 	db.AutoMigrate(&models.Product{})
 
 	// preparate dummy data
@@ -55,20 +56,19 @@ func TestGetAllProductInShop(t *testing.T) {
 		SellerID    uint   `json:"seller_id"`
 	}
 
-	var response Response
+	var response []Response
 	resBody2 := res.Body.String()
 
 	json.Unmarshal([]byte(resBody2), &response)
 
 	t.Run("GET /products", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
-		assert.Equal(t, "tomat", response.Name)
-		assert.Equal(t, 1000, response.Price)
-		assert.Equal(t, 10, response.Stock)
-		assert.Equal(t, "per ons", response.Description)
-		assert.Equal(t, 1, response.SellerID)
+		assert.Equal(t, "tomat", response[0].Name)
+		assert.Equal(t, 1000, response[0].Price)
+		assert.Equal(t, 10, response[0].Stock)
+		assert.Equal(t, "per ons", response[0].Description)
+		assert.Equal(t, uint(1), response[0].SellerID)
 	})
-	db.Migrator().DropTable(&models.Product{})
 }
 
 func TestGetSpecificProductInShop(t *testing.T) {
@@ -78,6 +78,7 @@ func TestGetSpecificProductInShop(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Product{})
 	db.AutoMigrate(&models.Product{})
 
 	// preparate dummy data
@@ -115,20 +116,19 @@ func TestGetSpecificProductInShop(t *testing.T) {
 		SellerID    uint   `json:"seller_id"`
 	}
 
-	var response Response
+	var response []Response
 	resBody2 := res.Body.String()
 
 	json.Unmarshal([]byte(resBody2), &response)
 
 	t.Run("GET /seller/:seller_id/product", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
-		assert.Equal(t, "tomat", response.Name)
-		assert.Equal(t, 1000, response.Price)
-		assert.Equal(t, 10, response.Stock)
-		assert.Equal(t, "per ons", response.Description)
-		assert.Equal(t, 1, response.SellerID)
+		assert.Equal(t, "tomat", response[0].Name)
+		assert.Equal(t, 1000, response[0].Price)
+		assert.Equal(t, 10, response[0].Stock)
+		assert.Equal(t, "per ons", response[0].Description)
+		assert.Equal(t, uint(1), response[0].SellerID)
 	})
-	db.Migrator().DropTable(&models.Product{})
 }
 
 func TestGetDetailSpecificProductInShop(t *testing.T) {
@@ -138,6 +138,7 @@ func TestGetDetailSpecificProductInShop(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Product{})
 	db.AutoMigrate(&models.Product{})
 
 	// preparate dummy data
@@ -184,7 +185,6 @@ func TestGetDetailSpecificProductInShop(t *testing.T) {
 		assert.Equal(t, 1000, response.Price)
 		assert.Equal(t, 10, response.Stock)
 		assert.Equal(t, "per ons", response.Description)
-		assert.Equal(t, 1, response.SellerID)
+		assert.Equal(t, uint(1), response.SellerID)
 	})
-	db.Migrator().DropTable(&models.Product{})
 }

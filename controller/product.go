@@ -66,18 +66,19 @@ func GetDetailSpecificProduct(c echo.Context) error {
 		})
 	}
 	type Output struct {
-		ID          uint
-		Email       string
-		Name        string
-		Price       int
-		Description string
-		SellerID    uint
+		ID          uint   `json:"id"`
+		Name        string `json:"name"`
+		Stock       int    `json:"stock"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
 	}
 
 	//set output data
 	output := Output{
 		ID:          specific_product.ID,
 		Name:        specific_product.Name,
+		Stock:       specific_product.Stock,
 		Price:       specific_product.Price,
 		Description: specific_product.Description,
 		SellerID:    specific_product.SellerID,

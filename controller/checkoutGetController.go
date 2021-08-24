@@ -20,6 +20,9 @@ func GetCheckoutStatusInProgress(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, inprogress_checkout)
 }
+func GetCheckoutStatusTesting() echo.HandlerFunc {
+	return GetCheckoutStatusInProgress
+}
 
 // // Ihsan
 // func GetCheckoutStatusComplete(c echo.Context) error {

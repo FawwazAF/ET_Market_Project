@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"etmarket/project/config"
+	"etmarket/project/constants"
 	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,6 +24,8 @@ func TestGetCheckoutStatusInProgress(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Checkout{})
+	db.Migrator().DropTable(&models.Customer{})
 	db.AutoMigrate(&models.Checkout{})
 	db.AutoMigrate(&models.Customer{})
 
@@ -32,7 +36,7 @@ func TestGetCheckoutStatusInProgress(t *testing.T) {
 		TotalPrice: 20000,
 		CustomerID: 1,
 		PaymentID:  1,
-		Status:     "progress",
+		Status:     "delivery",
 	}
 	if err := db.Save(&mocknewCheckout).Error; err != nil {
 		t.Error(err)
@@ -58,15 +62,14 @@ func TestGetCheckoutStatusInProgress(t *testing.T) {
 	// setting controller
 	e := echo.New()
 	q := make(url.Values)
-	q.Set("status", "progress")
+	q.Set("status", "delivery")
 	req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
 	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
 	context.SetPath("/history")
-
-	GetAllProductInShop(context)
+	middleware.JWT([]byte(constants.SECRET_JWT))(GetCheckoutStatusTesting())(context)
 
 	type Response struct {
 		TotalQty   int    `json:"total_qty"`
@@ -76,19 +79,17 @@ func TestGetCheckoutStatusInProgress(t *testing.T) {
 		Status     string `json:"status"`
 	}
 
-	var response Response
+	var response []Response
 	resBody2 := res.Body.String()
 
 	json.Unmarshal([]byte(resBody2), &response)
 
 	t.Run("GET /history", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
-		assert.Equal(t, 10, response.TotalQty)
-		assert.Equal(t, 20000, response.TotalPrice)
-		assert.Equal(t, 1, response.CustomerID)
-		assert.Equal(t, 1, response.PaymentID)
-		assert.Equal(t, "progress", response.Status)
+		assert.Equal(t, 10, response[0].TotalQty)
+		assert.Equal(t, 20000, response[0].TotalPrice)
+		assert.Equal(t, uint(1), response[0].CustomerID)
+		assert.Equal(t, uint(1), response[0].PaymentID)
+		assert.Equal(t, "delivery", response[0].Status)
 	})
-	db.Migrator().DropTable(&models.Checkout{})
-	db.Migrator().DropTable(&models.Customer{})
 }
