@@ -171,10 +171,10 @@ func GetSellerbyName(market_id int, category_name string) (interface{}, error) {
 Author: Riska
 This function for get seller id
 */
-func GetSellerIdByOderId(order_id int) (int, error) {
+func GetSellerIdByOrderId(order_id int) (int, error) {
 	var seller_id int
 	var err error
-	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products_id AND orders.id = ?", order_id).Scan(&seller_id)
+	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products.id AND orders.id = ?", order_id).Scan(&seller_id)
 
 	return seller_id, err
 }

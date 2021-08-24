@@ -4,208 +4,389 @@ import (
 	"bytes"
 	"encoding/json"
 	"etmarket/project/config"
+	"etmarket/project/constants"
+	"etmarket/project/middlewares"
 	"etmarket/project/models"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
-	mockDBDriver = models.Driver{
+	mock_driver = models.Driver{
 		Name:     "Riska",
 		Email:    "riska@gmail.com",
 		Password: "123",
 	}
-	mockDBDriverLoginSuccess = models.Driver{
+	mock_driver_login = models.Driver{
 		Email:    "riska@gmail.com",
 		Password: "123",
 	}
-	mockDBDriverLoginWrongEmail = models.Driver{
+	mock_driver_wrong_email = models.Driver{
 		Email:    "rizka@gmail.com",
 		Password: "123",
 	}
-	mockDBDriverLoginWrongPassword = models.Driver{
-		Email:    "riska@gmail.com",
-		Password: "1234",
-	}
 )
 
-func AddDriverData() bool {
-	driver := models.Driver{Name: "Riska", Email: "riska@gmail.com", Password: "$2a$12$S/cx.8/YvBHtbDrRsrd/DumMTsM4M3St0wWP1uonsBZysDw6Hk7Mm"}
-	if err := config.DB.Debug().Create(&driver); err != nil {
-		return false
-	}
-	return true
-}
-
 func TestDriverRegisterControllerSuccess(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	config.DB.Migrator().AutoMigrate(&models.Driver{})
-	body, _ := json.Marshal(mockDBDriver)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/register")
-	if assert.NoError(t, RegisterDriver(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		body := rec.Body.String()
-		var driver_response models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &driver_response)
-
-		assert.Equal(t, true, driver_response.Status)
-		assert.Equal(t, "Registration success", driver_response.Message)
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
 	}
-}
 
-func TestDriverRegisterControllerFailEmptyBody(t *testing.T) {
-	config.ConfigTest()
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// setting controller
+	body, _ := json.Marshal(mock_driver)
+	// r := ioutil.NopCloser(bytes.NewReader(body))
 	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	config.DB.Migrator().AutoMigrate(&models.Driver{})
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/register")
-	if assert.NoError(t, RegisterDriver(c)) {
-		assert.Equal(t, http.StatusInternalServerError, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/register")
 
-		assert.Equal(t, false, responseDriver.Status)
-		assert.Equal(t, "Email/Password cannot empty", responseDriver.Message)
+	RegisterDriver(context)
+
+	// Unmarshal respose string to struct
+	type Response struct {
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
 	}
-}
 
-func TestDriverRegisterControllerFailNoTable(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	body, _ := json.Marshal(mockDBDriver)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/register")
-	if assert.NoError(t, RegisterDriver(c)) {
-		assert.Equal(t, http.StatusInternalServerError, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
+	var response Response
+	res_body := res.Body.String()
 
-		assert.Equal(t, false, responseDriver.Status)
-		assert.Equal(t, "Registration failed", responseDriver.Message)
-	}
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("POST /driver/register", func(t *testing.T) {
+		assert.Equal(t, 200, res.Code)
+		assert.Equal(t, "Riska", response.Name)
+		assert.Equal(t, "riska@gmail.com", response.Email)
+	})
+	db.Migrator().DropTable(&models.Driver{})
 }
 
 func TestDriverLoginControllerSuccess(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	config.DB.Migrator().AutoMigrate(&models.Driver{})
-	AddDriverData()
-	body, _ := json.Marshal(&mockDBDriverLoginSuccess)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/login")
-	if assert.NoError(t, LoginDriver(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
-
-		assert.Equal(t, true, responseDriver.Status)
-		assert.Equal(t, "Login success", responseDriver.Message)
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
 	}
+
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// preparate dummy data
+	driver := models.Driver{
+		Name:     "Riska",
+		Email:    "riska@gmail.com",
+		Password: "123",
+		Address:  "Jl Bogor Raya",
+		Gender:   "F",
+	}
+	convert_pwd := []byte(driver.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	driver.Password = hashed_pwd
+	if err := db.Save(&driver).Error; err != nil {
+		t.Error(err)
+	}
+
+	// setting controller
+	body, _ := json.Marshal(mock_driver_login)
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(body))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/login")
+
+	LoginDriver(context)
+
+	// Unmarshal respose string to struct
+	type Response struct {
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+	}
+
+	var response Response
+	res_body := res.Body.String()
+
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("POST /driver/login", func(t *testing.T) {
+		assert.Equal(t, 200, res.Code)
+		assert.Equal(t, "riska@gmail.com", response.Email)
+	})
+	db.Migrator().DropTable(&models.Driver{})
 }
 
-func TestDriverLoginControllerFailNoTable(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	body, _ := json.Marshal(&mockDBDriverLoginWrongEmail)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/login")
-	if assert.NoError(t, LoginDriver(c)) {
-		assert.Equal(t, http.StatusInternalServerError, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
-
-		assert.Equal(t, false, responseDriver.Status)
-		assert.Equal(t, "Database error", responseDriver.Message)
+func TestDriverLoginControllerWrongEmail(t *testing.T) {
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
 	}
+
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// preparate dummy data
+	driver := models.Driver{
+		Name:     "Riska",
+		Email:    "riska@gmail.com",
+		Password: "123",
+		Address:  "Jl Bogor Raya",
+		Gender:   "F",
+	}
+	convert_pwd := []byte(driver.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	driver.Password = hashed_pwd
+	if err := db.Save(&driver).Error; err != nil {
+		t.Error(err)
+	}
+
+	// setting controller
+	body, _ := json.Marshal(mock_driver_wrong_email)
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(body))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/login")
+
+	LoginDriver(context)
+
+	var response models.DriverResponse
+	res_body := res.Body.String()
+
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("POST /driver/login", func(t *testing.T) {
+		assert.Equal(t, false, response.Status)
+		assert.Equal(t, "User Unauthorized. Email or Password not equal", response.Message)
+	})
+	db.Migrator().DropTable(&models.Driver{})
 }
 
-func TestDriverLoginControllerFailWrongEmail(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	config.DB.Migrator().AutoMigrate(&models.Driver{})
-	AddDriverData()
-	body, _ := json.Marshal(&mockDBDriverLoginWrongEmail)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/login")
-	if assert.NoError(t, LoginDriver(c)) {
-		assert.Equal(t, http.StatusInternalServerError, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
-
-		assert.Equal(t, false, responseDriver.Status)
-		assert.Equal(t, "Wrong email", responseDriver.Message)
+func TestGetDetailDriver(t *testing.T) {
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
 	}
+
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// preparate dummy data
+	driver := models.Driver{
+		Name:     "Riska",
+		Email:    "riska@gmail.com",
+		Password: "123",
+		Address:  "Jl Bogor Raya",
+		Gender:   "F",
+	}
+	convert_pwd := []byte(driver.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	driver.Password = hashed_pwd
+	if err := db.Save(&driver).Error; err != nil {
+		t.Error(err)
+	}
+
+	//Make Token
+	var user models.Driver
+	if err := config.DB.Where("email = ?", driver.Email).First(&user).Error; err != nil {
+		t.Error(err)
+	}
+
+	token, err := middlewares.CreateToken(int(user.ID))
+	if err != nil {
+		panic(err)
+	}
+
+	// setting controller
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/:driver_id")
+	context.SetParamNames("driver_id")
+	context.SetParamValues("1")
+	middleware.JWT([]byte(constants.SECRET_JWT))(GetDetailDriverTesting())(context)
+
+	// Unmarshal respose string to struct
+	type Response struct {
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+	}
+
+	var response Response
+	res_body := res.Body.String()
+
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("PUT /driver/:driver_id", func(t *testing.T) {
+		assert.Equal(t, 200, res.Code)
+		assert.Equal(t, "riska@gmail.com", response.Email)
+	})
+	db.Migrator().DropTable(&models.Driver{})
 }
 
-func TestDriverLoginControllerFailWrongPassword(t *testing.T) {
-	config.ConfigTest()
-	e := echo.New()
-	config.DB.Migrator().DropTable(&models.Driver{})
-	config.DB.Migrator().AutoMigrate(&models.Driver{})
-	AddDriverData()
-	body, _ := json.Marshal(&mockDBDriverLoginWrongPassword)
-	r := ioutil.NopCloser(bytes.NewReader(body))
-	req := httptest.NewRequest(http.MethodGet, "/", r)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/driver/login")
-	if assert.NoError(t, LoginDriver(c)) {
-		assert.Equal(t, http.StatusInternalServerError, rec.Code)
-		body := rec.Body.String()
-		var responseDriver models.DriverResponse
-		fmt.Println(body)
-		json.Unmarshal([]byte(body), &responseDriver)
-
-		assert.Equal(t, false, responseDriver.Status)
-		assert.Equal(t, "Wrong password", responseDriver.Message)
+func TestUpdateDriver(t *testing.T) {
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
 	}
+
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// preparate dummy data
+	driver := models.Driver{
+		Name:     "Riska",
+		Email:    "riska@gmail.com",
+		Password: "123",
+		Address:  "Jl Bogor Raya",
+		Gender:   "F",
+	}
+	convert_pwd := []byte(driver.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	driver.Password = hashed_pwd
+	if err := db.Save(&driver).Error; err != nil {
+		t.Error(err)
+	}
+
+	//Make Token
+	var user models.Driver
+	if err := config.DB.Where("email = ?", driver.Email).First(&user).Error; err != nil {
+		t.Error(err)
+	}
+
+	token, err := middlewares.CreateToken(int(user.ID))
+	if err != nil {
+		panic(err)
+	}
+
+	// setting controller
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/:driver_id")
+	context.SetParamNames("driver_id")
+	context.SetParamValues("1")
+	middleware.JWT([]byte(constants.SECRET_JWT))(UpdateDriverTesting())(context)
+
+	// Unmarshal respose string to struct
+	type Response struct {
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+	}
+
+	var response Response
+	res_body := res.Body.String()
+
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("PUT /driver/:driver_id", func(t *testing.T) {
+		assert.Equal(t, 200, res.Code)
+		assert.Equal(t, "riska@gmail.com", response.Email)
+	})
+	db.Migrator().DropTable(&models.Driver{})
+}
+
+func TestLogoutDriver(t *testing.T) {
+	// create database connection
+	db, err := config.ConfigTest()
+	if err != nil {
+		t.Error(err)
+	}
+
+	// cleaning data before testing
+	db.Migrator().DropTable(&models.Driver{})
+	db.AutoMigrate(&models.Driver{})
+
+	// preparate dummy data
+	driver := models.Driver{
+		Name:     "Riska",
+		Email:    "riska@gmail.com",
+		Password: "123",
+		Address:  "Jl Bogor Raya",
+		Gender:   "F",
+	}
+	convert_pwd := []byte(driver.Password) //convert pass from string to byte
+	hashed_pwd := EncryptPwd(convert_pwd)
+	driver.Password = hashed_pwd
+	if err := db.Save(&driver).Error; err != nil {
+		t.Error(err)
+	}
+
+	//Make Token
+	var user models.Driver
+	if err := config.DB.Where("email = ?", driver.Email).First(&user).Error; err != nil {
+		t.Error(err)
+	}
+
+	token, err := middlewares.CreateToken(int(user.ID))
+	if err != nil {
+		panic(err)
+	}
+
+	// setting controller
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	res := httptest.NewRecorder()
+	context := e.NewContext(req, res)
+	context.SetPath("/driver/logout/:driver_id")
+	context.SetParamNames("driver_id")
+	context.SetParamValues("1")
+	middleware.JWT([]byte(constants.SECRET_JWT))(LogoutDriverTesting())(context)
+
+	// Unmarshal respose string to struct
+	type Response struct {
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+		Token   string `json:"token"`
+	}
+
+	var response Response
+	res_body := res.Body.String()
+
+	json.Unmarshal([]byte(res_body), &response)
+
+	t.Run("PUT /driver/:driver_id", func(t *testing.T) {
+		assert.Equal(t, 200, res.Code)
+		assert.Equal(t, "", response.Token)
+	})
+	db.Migrator().DropTable(&models.Driver{})
 }

@@ -41,9 +41,9 @@ func RegisterDriver(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Name  string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Name  string `json:"name"`
 	}
 
 	//set output data
@@ -81,9 +81,9 @@ func LoginDriver(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Token string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Token string `json:"token"`
 	}
 
 	//set output data
@@ -122,11 +122,11 @@ func GetDetailDriver(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -139,6 +139,10 @@ func GetDetailDriver(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func GetDetailDriverTesting() echo.HandlerFunc {
+	return GetDetailDriver
 }
 
 /*
@@ -197,11 +201,11 @@ func UpdateDriver(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -214,6 +218,10 @@ func UpdateDriver(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func UpdateDriverTesting() echo.HandlerFunc {
+	return UpdateDriver
 }
 
 /*
@@ -250,11 +258,11 @@ func LogoutDriver(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -267,4 +275,8 @@ func LogoutDriver(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func LogoutDriverTesting() echo.HandlerFunc {
+	return LogoutDriver
 }

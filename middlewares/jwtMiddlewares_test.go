@@ -24,19 +24,3 @@ func TestCreateToken(t *testing.T) {
 		t.Errorf("Expected %v but got %v", expectation, actual)
 	}
 }
-
-// func TestExtractToken(t *testing.T) {
-// 	token, _ := CreateTokenTest(1)
-// 	e := echo.New()
-// 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-// 	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
-// 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-// 	rec := httptest.NewRecorder()
-// 	c := e.NewContext(req, rec)
-
-// 	var expectation float64 = 0
-// 	actual := float64(ExtractToken(c))
-// 	if actual != expectation {
-// 		t.Errorf("Expected %v but got %v", expectation, actual)
-// 	}
-// }
