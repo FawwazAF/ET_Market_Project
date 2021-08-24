@@ -119,10 +119,7 @@ func GetListOrderOnCheckoutForCustomer(checkout_id uint) ([]Result, error) {
 
 	var result []Result
 	for rows.Next() {
-		// ScanRows scan a row into user
 		config.DB.ScanRows(rows, &result)
-
-		// do something
 	}
 
 	return result, err
