@@ -267,7 +267,6 @@ func AddProductToSeller(c echo.Context) error {
 	}
 	type Output struct {
 		ID          uint   `json:"id"`
-		Email       string `json:"email"`
 		Name        string `json:"name"`
 		Price       int    `json:"price"`
 		Description string `json:"description"`
@@ -348,6 +347,7 @@ func GetAllOrders(c echo.Context) error {
 	}
 
 	type ProductOnSeller struct {
+		ID          uint   `json:"id"`
 		DriverName  string `json:"driver_name"`
 		ProductName string `json:"product_name"`
 		Qty         int    `json:"qty"`
@@ -357,6 +357,7 @@ func GetAllOrders(c echo.Context) error {
 	var output []ProductOnSeller
 	for i := 0; i < len(list_product); i++ {
 		new_array := ProductOnSeller{
+			ID:          list_product[i].ID,
 			DriverName:  list_product[i].DriverName,
 			ProductName: list_product[i].ProductName,
 			Qty:         list_product[i].Qty,
