@@ -22,6 +22,7 @@ var (
 		Name:     "Riska",
 		Email:    "riska@gmail.com",
 		Password: "123",
+		Gender:   "F",
 	}
 	mock_seller_login = models.Seller{
 		Email:    "riska@gmail.com",
@@ -638,18 +639,12 @@ func TestGetSellerProducts(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Seller{})
+	db.Migrator().DropTable(&models.Product{})
 	db.AutoMigrate(&models.Seller{})
 	db.AutoMigrate(&models.Product{})
 
 	// preparate dummy data
-	//Checkout dummy
-	var newProduct models.Product
-	newProduct.Name = "tomat"
-	newProduct.Price = 1000
-	newProduct.Stock = 10
-	if err := db.Save(&newProduct).Error; err != nil {
-		t.Error(err)
-	}
 	//Seller dummy
 	var newSeller models.Seller
 	newSeller.Name = "jojo"
@@ -658,6 +653,17 @@ func TestGetSellerProducts(t *testing.T) {
 	newSeller.Address = "bandung"
 	newSeller.Gender = "M"
 	if err := db.Save(&newSeller).Error; err != nil {
+		t.Error(err)
+	}
+	//Checkout dummy
+	newProduct := models.Product{
+		Name:        "tomat",
+		Price:       1000,
+		Stock:       10,
+		Description: "unit per ons",
+		SellerID:    uint(1),
+	}
+	if err := db.Save(&newProduct).Error; err != nil {
 		t.Error(err)
 	}
 	//Make Token
@@ -675,8 +681,7 @@ func TestGetSellerProducts(t *testing.T) {
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
 	context.SetPath("/seller/products")
-
-	GetSellerProducts(context)
+	middleware.JWT([]byte(constants.SECRET_JWT))(GetSellerProductTesting())(context)
 
 	type Response struct {
 		Name        string `json:"name"`
@@ -685,31 +690,18 @@ func TestGetSellerProducts(t *testing.T) {
 		Description string `json:"description"`
 		SellerID    uint   `json:"seller_id"`
 	}
-	// var Result models.Product
-	// var show_list []Result
-	// for i := 0; i < len(list_product); i++ {
-	// 	new_array := Result{
-	// 		Name:  list_product[i].Name,
-	// 		Price: list_product[i].Price,
-	// 		Stock: list_product[i].Stock,
-	// 	}
-	// 	show_list = append(show_list, new_array)
-	// }
 
-	var response Response
+	var response []Response
 	resBody2 := res.Body.String()
 
 	json.Unmarshal([]byte(resBody2), &response)
 
 	t.Run("GET /seller/products", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
-		assert.Equal(t, "tomat", response.Name)
-		assert.Equal(t, 1000, response.Price)
-		assert.Equal(t, 10, response.Stock)
+		assert.Equal(t, "tomat", response[0].Name)
+		assert.Equal(t, 1000, response[0].Price)
+		assert.Equal(t, 10, response[0].Stock)
 	})
-
-	db.Migrator().DropTable(&models.Seller{})
-	db.Migrator().DropTable(&models.Product{})
 }
 
 func TestAddProductToSeller(t *testing.T) {
@@ -719,6 +711,8 @@ func TestAddProductToSeller(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Product{})
+	db.Migrator().DropTable(&models.Seller{})
 	db.AutoMigrate(&models.Seller{})
 	db.AutoMigrate(&models.Product{})
 
@@ -758,13 +752,11 @@ func TestAddProductToSeller(t *testing.T) {
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
 	context.SetPath("/seller/products")
-
-	AddProductToSeller(context)
+	middleware.JWT([]byte(constants.SECRET_JWT))(AddProductToSellerTesting())(context)
 
 	type Response struct {
 		Name        string `json:"name"`
 		Price       int    `json:"price"`
-		Stock       int    `json:"stock"`
 		Description string `json:"description"`
 		SellerID    uint   `json:"seller_id"`
 	}
@@ -778,12 +770,9 @@ func TestAddProductToSeller(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, "tomat", response.Name)
 		assert.Equal(t, 1000, response.Price)
-		assert.Equal(t, 10, response.Stock)
 		assert.Equal(t, "per ons", response.Description)
-		assert.Equal(t, 1, response.SellerID)
+		assert.Equal(t, uint(1), response.SellerID)
 	})
-	db.Migrator().DropTable(&models.Product{})
-	db.Migrator().DropTable(&models.Seller{})
 }
 
 func TestEditSellerProduct(t *testing.T) {
@@ -793,18 +782,12 @@ func TestEditSellerProduct(t *testing.T) {
 		t.Error(err)
 	}
 	// cleaning data before testing
+	db.Migrator().DropTable(&models.Product{})
+	db.Migrator().DropTable(&models.Seller{})
 	db.AutoMigrate(&models.Seller{})
 	db.AutoMigrate(&models.Product{})
 
 	// preparate dummy data
-	//Checkout dummy
-	var newProduct models.Product
-	newProduct.Name = "tomat"
-	newProduct.Price = 1000
-	newProduct.Stock = 10
-	if err := db.Save(&newProduct).Error; err != nil {
-		t.Error(err)
-	}
 	//Seller dummy
 	var newSeller models.Seller
 	newSeller.Name = "jojo"
@@ -815,6 +798,18 @@ func TestEditSellerProduct(t *testing.T) {
 	if err := db.Save(&newSeller).Error; err != nil {
 		t.Error(err)
 	}
+	//Product dummy
+	newProduct := models.Product{
+		Name:        "tomat",
+		Price:       1000,
+		Stock:       10,
+		Description: "per ons",
+		SellerID:    uint(1),
+	}
+	if err := db.Save(&newProduct).Error; err != nil {
+		t.Error(err)
+	}
+
 	//Make Token
 	var seller models.Seller
 	if err := config.DB.Where("email = ?", newSeller.Email).First(&seller).Error; err != nil {
@@ -840,13 +835,11 @@ func TestEditSellerProduct(t *testing.T) {
 	context.SetPath("/seller/products/:product_id")
 	context.SetParamNames("product_id")
 	context.SetParamValues("1")
-
-	EditSellerProduct(context)
+	middleware.JWT([]byte(constants.SECRET_JWT))(EditSellerProductTesting())(context)
 
 	type Response struct {
 		Name        string `json:"name"`
 		Price       int    `json:"price"`
-		Stock       int    `json:"stock"`
 		Description string `json:"description"`
 		SellerID    uint   `json:"seller_id"`
 	}
@@ -856,14 +849,11 @@ func TestEditSellerProduct(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("POST /seller/products/:product_id", func(t *testing.T) {
+	t.Run("PUT /seller/products/:product_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, "kangkung", response.Name)
 		assert.Equal(t, 1500, response.Price)
-		assert.Equal(t, 11, response.Stock)
 		assert.Equal(t, "per ons", response.Description)
-		assert.Equal(t, 1, response.SellerID)
+		assert.Equal(t, uint(1), response.SellerID)
 	})
-	db.Migrator().DropTable(&models.Product{})
-	db.Migrator().DropTable(&models.Seller{})
 }

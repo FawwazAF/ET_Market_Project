@@ -43,12 +43,12 @@ func GetAllCarts(customer_id int) ([]models.Cart, error) {
 Author: Patmiza
 Deleting a product from a cart for spesific customer and spesific product
 */
-func DeleteProductFromCart(customer_id, product_id int) (interface{}, error) {
+func DeleteProductFromCart(customer_id, cart_id int) (interface{}, error) {
 	var cart models.Cart
-	if err := config.DB.Find(&cart, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
+	if err := config.DB.Find(&cart, "customer_id=? AND id = ?", customer_id, cart_id).Error; err != nil {
 		return nil, err
 	}
-	if err := config.DB.Delete(&cart, "customer_id=? AND product_id = ?", customer_id, product_id).Error; err != nil {
+	if err := config.DB.Delete(&cart, "customer_id=? AND id = ?", customer_id, cart_id).Error; err != nil {
 		return nil, err
 	}
 	return cart, nil

@@ -22,6 +22,7 @@ var (
 		Name:     "Riska",
 		Email:    "riska@gmail.com",
 		Password: "123",
+		Gender:   "F",
 	}
 	mock_driver_login = models.Driver{
 		Email:    "riska@gmail.com",

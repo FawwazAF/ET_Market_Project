@@ -16,10 +16,10 @@ func GetAllCategories() ([]models.Category, error) {
 /*
 Author: Patmiza
 */
-func GetAllCategoriesMarketId(market_id int) (interface{}, error) {
+func GetAllCategoriesMarketId(market_id int) ([]models.Seller, error) {
 	var seller []models.Seller
 	if err := config.DB.Find(&seller, "market_id=?", market_id).Error; err != nil {
-		return nil, err
+		return seller, err
 	}
 	return seller, nil
 }

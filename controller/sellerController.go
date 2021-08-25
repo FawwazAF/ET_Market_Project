@@ -246,6 +246,9 @@ func GetSellerProducts(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, all_products_selected_seller)
 }
+func GetSellerProductTesting() echo.HandlerFunc {
+	return GetSellerProducts
+}
 
 // Ihsan
 func AddProductToSeller(c echo.Context) error {
@@ -263,12 +266,12 @@ func AddProductToSeller(c echo.Context) error {
 		})
 	}
 	type Output struct {
-		ID          uint
-		Email       string
-		Name        string
-		Price       int
-		Description string
-		SellerID    uint
+		ID          uint   `json:"id"`
+		Email       string `json:"email"`
+		Name        string `json:"name"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
 	}
 
 	//set output data
@@ -280,6 +283,9 @@ func AddProductToSeller(c echo.Context) error {
 		SellerID:    product_added.SellerID,
 	}
 	return c.JSON(http.StatusOK, output)
+}
+func AddProductToSellerTesting() echo.HandlerFunc {
+	return AddProductToSeller
 }
 
 // ihsan
@@ -307,12 +313,11 @@ func EditSellerProduct(c echo.Context) error {
 		})
 	}
 	type Output struct {
-		ID          uint
-		Email       string
-		Name        string
-		Price       int
-		Description string
-		SellerID    uint
+		ID          uint   `json:"id"`
+		Name        string `json:"name"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
 	}
 
 	//set output data
@@ -324,6 +329,9 @@ func EditSellerProduct(c echo.Context) error {
 		SellerID:    product_edited.SellerID,
 	}
 	return c.JSON(http.StatusOK, output)
+}
+func EditSellerProductTesting() echo.HandlerFunc {
+	return EditSellerProduct
 }
 
 /*

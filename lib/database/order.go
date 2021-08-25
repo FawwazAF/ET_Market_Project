@@ -10,9 +10,9 @@ Author: Patmiza
 Getting all categories of seller in a market
 */
 func GetAllProgressOrders(driver_id, checkout_id int) (interface{}, error) {
-	var checkout models.Checkout
+	var delivery models.Delivery
 	var orders []models.Order
-	if err := config.DB.Find(&checkout, "driver_id = ? AND id = ?", driver_id, checkout_id).Error; err != nil {
+	if err := config.DB.Find(&delivery, "driver_id = ? AND checkout_id = ? AND status = ?", driver_id, checkout_id, "progress").Error; err != nil {
 		return nil, err
 	}
 	if err := config.DB.Find(&orders, "checkout_id = ? AND status = ?", checkout_id, "progress").Error; err != nil {

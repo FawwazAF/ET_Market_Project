@@ -18,13 +18,12 @@ func GetOrderList(c echo.Context) error {
 			"message": "please login first",
 		})
 	}
-	markets, err := database.GetOrdertoTake()
+	checkout, err := database.GetOrdertoTake()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, markets)
+	return c.JSON(http.StatusOK, checkout)
 }
-
 func GetOrderListTesting() echo.HandlerFunc {
 	return GetOrderList
 }
@@ -56,6 +55,9 @@ func TakeCheckout(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, delivery)
 }
+func TakeCheckoutTesting() echo.HandlerFunc {
+	return TakeCheckout
+}
 
 //Fawwaz
 //Update status after finishing the delivery
@@ -78,4 +80,7 @@ func FinishedDelivery(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, delivery)
+}
+func FinishedDeliveryTesting() echo.HandlerFunc {
+	return FinishedDelivery
 }

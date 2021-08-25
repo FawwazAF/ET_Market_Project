@@ -84,6 +84,10 @@ func CheckoutTransaction(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+func CheckoutTransactionTesting() echo.HandlerFunc {
+	return CheckoutTransaction
+}
+
 /*
 Riska
 This function for send email notification for customer that the purchase is success
@@ -111,9 +115,8 @@ func SendEmail(checkout_id uint, customer_id int) {
 	// Authentication.
 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
-	t, _ := template.ParseFiles("template.html")
-
-	var body bytes.Buffer
+	t, _ := template.ParseFiles("../template.html")
+	body := bytes.Buffer{}
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body.Write([]byte(fmt.Sprintf("Subject: [E-T Market] Thank you for your purchase \n%s\n\n", mimeHeaders)))
@@ -136,15 +139,16 @@ func SendEmail(checkout_id uint, customer_id int) {
 		show_list = append(show_list, new_array)
 	}
 
-	t.Execute(&body, struct {
-		Name       string
-		TotalPrice int
-		Product    []Result
-	}{
-		Name:       name_customer,
-		TotalPrice: total_price,
-		Product:    show_list,
-	})
+	t.Execute(
+		&body, struct {
+			Name       string
+			TotalPrice int
+			Product    []Result
+		}{
+			Name:       name_customer,
+			TotalPrice: total_price,
+			Product:    show_list,
+		})
 
 	// Sending email.
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
@@ -200,4 +204,7 @@ func FinishTransaction(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, checkout)
+}
+func FinishTransactionTesting() echo.HandlerFunc {
+	return FinishTransaction
 }

@@ -20,7 +20,7 @@ func InsertProductIntoCartController(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "invalid customer id",
+			"message": "invalid seller id",
 		})
 	}
 
@@ -42,10 +42,10 @@ func InsertProductIntoCartController(c echo.Context) error {
 			"message": "cart is not found",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success create new cart",
-		"Cart":   new_cart,
-	})
+	return c.JSON(http.StatusOK, new_cart)
+}
+func InsertProductIntoCartTesting() echo.HandlerFunc {
+	return InsertProductIntoCartController
 }
 
 /*
@@ -62,13 +62,16 @@ func GetAllCartsController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, carts)
 }
+func GetAllCartsTesting() echo.HandlerFunc {
+	return GetAllCartsController
+}
 
 /*
 Author: Patmiza
 */
 func DeleteProductInCartsController(c echo.Context) error {
 	//checking product id
-	product_id, err := strconv.Atoi(c.Param("product_id"))
+	cart_id, err := strconv.Atoi(c.Param("cart_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid product id",
@@ -77,12 +80,12 @@ func DeleteProductInCartsController(c echo.Context) error {
 
 	//extracting token of customer id
 	logged_in_customer_id := middlewares.ExtractToken(c)
-	carts, err := database.DeleteProductFromCart(logged_in_customer_id, product_id)
+	carts, err := database.DeleteProductFromCart(logged_in_customer_id, cart_id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"Carts":  carts,
-	})
+	return c.JSON(http.StatusOK, carts)
+}
+func DeleteProductInCartTesting() echo.HandlerFunc {
+	return DeleteProductInCartsController
 }
