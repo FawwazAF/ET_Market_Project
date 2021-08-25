@@ -4,7 +4,6 @@ import "gorm.io/gorm"
 
 type Customer struct {
 	gorm.Model
-	ID       uint   `gorm:"primarykey"`
 	Name     string `json:"name" form:"name"`
 	Email    string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
@@ -14,7 +13,6 @@ type Customer struct {
 }
 
 type CustomerLogin struct {
-	ID      uint   `json:"id" gorm:"primarykey"`
 	Name    string `json:"name"`
 	Email   string `gorm:"UNIQUE" json:"email"`
 	Address string `json:"address" form:"address"`

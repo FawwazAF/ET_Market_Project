@@ -124,10 +124,10 @@ func UpdateSeller(seller models.Seller) (models.Seller, error) {
 	return seller, nil
 }
 
-func GetAllSellerProduct(seller_id int) (interface{}, error) {
+func GetAllSellerProduct(seller_id int) ([]models.Product, error) {
 	var product []models.Product
 	if err := config.DB.Find(&product, "seller_id = ?", seller_id).Error; err != nil {
-		return nil, err
+		return product, err
 	}
 	return product, nil
 }
@@ -171,10 +171,10 @@ func GetSellerbyName(market_id int, category_name string) (interface{}, error) {
 Author: Riska
 This function for get seller id
 */
-func GetSellerIdByOderId(order_id int) (int, error) {
+func GetSellerIdByOrderId(order_id int) (int, error) {
 	var seller_id int
 	var err error
-	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products_id AND orders.id = ?", order_id).Scan(&seller_id)
+	config.DB.Raw("SELECT products.seller_id FROM orders, products WHERE orders.product_id = products.id AND orders.id = ?", order_id).Scan(&seller_id)
 
 	return seller_id, err
 }

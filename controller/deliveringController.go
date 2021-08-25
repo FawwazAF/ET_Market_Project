@@ -14,7 +14,7 @@ import (
 func GetOrderList(c echo.Context) error {
 	logged_driver_id := middlewares.ExtractToken(c)
 	if logged_driver_id == 0 {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "please login first",
 		})
 	}

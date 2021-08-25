@@ -86,12 +86,16 @@
                     <tr>
                       <td>{{$elem.Name}}</td>
                       <td>{{$elem.Qty}}</td>
-                      <td>{{$elem.Price}}</td>
+                      <td>Rp {{$elem.Price}}</td>
                     </tr>
-                  <tr>
                   {{end}}
+                  <tr>
+                    <th colspan="2"><center>Biaya Pengiriman</center></th>
+                    <th>Rp 5000</th>
+                  </tr>
+                  <tr>
                     <th colspan="2"><center>Total</center></th>
-                    <th>{{.TotalPrice}}</th>
+                    <th>Rp {{.TotalPrice}}</th>
                   </tr>
                 </table>
             </div>

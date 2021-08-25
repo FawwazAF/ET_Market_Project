@@ -8,9 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/labstack/echo"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAllMarket(t *testing.T) {

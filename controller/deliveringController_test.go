@@ -68,7 +68,10 @@ func TestGetOrderList(t *testing.T) {
 		t.Error(err)
 	}
 
-	token, _ := middlewares.CreateToken(int(driver.ID))
+	token, err := middlewares.CreateToken(int(driver.ID))
+	if err != nil {
+		panic(err)
+	}
 	// setting controller
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -90,7 +93,7 @@ func TestGetOrderList(t *testing.T) {
 	resBody2 := res.Body.String()
 
 	json.Unmarshal([]byte(resBody2), &response)
-
+	fmt.Println(response)
 	t.Run("GET /driver/orderlist", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, uint(1), response[0].ID)

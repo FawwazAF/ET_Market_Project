@@ -115,7 +115,7 @@ func SendEmail(checkout_id uint, customer_id int) {
 	// Authentication.
 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
-	t, _ := template.ParseFiles("template.html")
+	t, _ := template.ParseFiles("../template.html")
 	body := bytes.Buffer{}
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"

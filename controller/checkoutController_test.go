@@ -12,11 +12,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/middleware"
-
 	"github.com/stretchr/testify/assert"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func TestGetAllPaymentMethod(t *testing.T) {

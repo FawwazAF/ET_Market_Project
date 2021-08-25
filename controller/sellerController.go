@@ -41,9 +41,9 @@ func RegisterSeller(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Name  string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Name  string `json:"name"`
 	}
 
 	//set output data
@@ -81,9 +81,9 @@ func LoginSeller(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Token string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Token string `json:"token"`
 	}
 
 	//set output data
@@ -124,12 +124,12 @@ func GetDetailSeller(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
-		Hp      int64
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+		Hp      int64  `json:"hp"`
 	}
 
 	//set output data
@@ -143,6 +143,10 @@ func GetDetailSeller(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func GetDetailSellerTesting() echo.HandlerFunc {
+	return GetDetailSeller
 }
 
 /*
@@ -206,12 +210,12 @@ func UpdateSeller(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
-		Hp      int64
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+		Hp      int64  `json:"hp"`
 	}
 
 	//set output data
@@ -227,6 +231,10 @@ func UpdateSeller(c echo.Context) error {
 	return c.JSON(http.StatusOK, output)
 }
 
+func UpdateSellerTesting() echo.HandlerFunc {
+	return UpdateSeller
+}
+
 // Ihsan
 func GetSellerProducts(c echo.Context) error {
 	// Auth
@@ -234,14 +242,12 @@ func GetSellerProducts(c echo.Context) error {
 	// Get data
 	all_products_selected_seller, err := database.GetAllSellerProduct(seller_id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]interface{}{
-			"message": "no products in the shop",
-		})
+		return c.JSON(http.StatusNotFound, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "get all products from this shop success",
-		"data":    all_products_selected_seller,
-	})
+	return c.JSON(http.StatusOK, all_products_selected_seller)
+}
+func GetSellerProductTesting() echo.HandlerFunc {
+	return GetSellerProducts
 }
 
 // Ihsan
@@ -255,14 +261,31 @@ func AddProductToSeller(c echo.Context) error {
 	// Add data from request
 	product_added, err := database.AddProductToSeller(product)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot add product",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"data":    product_added,
-	})
+	type Output struct {
+		ID          uint   `json:"id"`
+		Email       string `json:"email"`
+		Name        string `json:"name"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
+	}
+
+	//set output data
+	output := Output{
+		ID:          product_added.ID,
+		Name:        product_added.Name,
+		Price:       product_added.Price,
+		Description: product_added.Description,
+		SellerID:    product_added.SellerID,
+	}
+	return c.JSON(http.StatusOK, output)
+}
+func AddProductToSellerTesting() echo.HandlerFunc {
+	return AddProductToSeller
 }
 
 // ihsan
@@ -289,10 +312,26 @@ func EditSellerProduct(c echo.Context) error {
 			"message": "cannot edit product",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"data":    product_edited,
-	})
+	type Output struct {
+		ID          uint   `json:"id"`
+		Name        string `json:"name"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
+	}
+
+	//set output data
+	output := Output{
+		ID:          product_edited.ID,
+		Name:        product_edited.Name,
+		Price:       product_edited.Price,
+		Description: product_edited.Description,
+		SellerID:    product_edited.SellerID,
+	}
+	return c.JSON(http.StatusOK, output)
+}
+func EditSellerProductTesting() echo.HandlerFunc {
+	return EditSellerProduct
 }
 
 /*
@@ -308,7 +347,29 @@ func GetAllOrders(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, list_product)
+	type ProductOnSeller struct {
+		DriverName  string `json:"driver_name"`
+		ProductName string `json:"product_name"`
+		Qty         int    `json:"qty"`
+		Price       int    `json:"price"`
+	}
+
+	var output []ProductOnSeller
+	for i := 0; i < len(list_product); i++ {
+		new_array := ProductOnSeller{
+			DriverName:  list_product[i].DriverName,
+			ProductName: list_product[i].ProductName,
+			Qty:         list_product[i].Qty,
+			Price:       list_product[i].Price,
+		}
+		output = append(output, new_array)
+	}
+
+	return c.JSON(http.StatusOK, output)
+}
+
+func GetAllOrdersTesting() echo.HandlerFunc {
+	return GetAllOrders
 }
 
 /*
@@ -325,7 +386,7 @@ func EditStatusItemOrder(c echo.Context) error {
 		})
 	}
 
-	seller_id, err := database.GetSellerIdByOderId(order_id)
+	seller_id, err := database.GetSellerIdByOrderId(order_id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "cannot get seller id",
@@ -355,12 +416,12 @@ func EditStatusItemOrder(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID         uint
-		CheckoutID uint
-		ProductID  uint
-		Qty        int
-		Price      int
-		Status     string
+		ID         uint   `json:"id"`
+		CheckoutID uint   `json:"checkout_id"`
+		ProductID  uint   `json:"product_id"`
+		Qty        int    `json:"qty"`
+		Price      int    `json:"price"`
+		Status     string `json:"status"`
 	}
 
 	//set output data
@@ -374,6 +435,10 @@ func EditStatusItemOrder(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func EditStatusItemOrderTesting() echo.HandlerFunc {
+	return EditStatusItemOrder
 }
 
 /*
@@ -410,12 +475,12 @@ func LogoutSeller(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
-		Hp      int64
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
+		Hp      int64  `json:"hp"`
 	}
 
 	//set output data
@@ -429,4 +494,8 @@ func LogoutSeller(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func LogoutSellerTesting() echo.HandlerFunc {
+	return LogoutSeller
 }
