@@ -1,0 +1,26 @@
+name: Deploy to EC2
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to EC2 by using SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          if [ ! -d "/home/ubuntu/app/ET_Market_Project" ]
+          then
+            git clone git@github.com:FawwazAF/ET_Market_Project.git /home/ubuntu/app
+          fi
+          cd /home/ubuntu/app/ET_Market_Project
+          git pull origin development
+          docker stop etmContainer
+          docker rm etmContainer
+          docker build -t et-market:latest .
+          docker run -d --name etmContainer -p 80:80 -e "HTTP_PORT=80" -e "CONNECTION_STRING=root:12345678@tcp(54.169.6.86:3306)/etmarket_schema?charset=utf8&parseTime=True&loc=Local" et-market:latest
