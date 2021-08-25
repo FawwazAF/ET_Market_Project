@@ -23,13 +23,10 @@ func GetAllProductInShop(c echo.Context) error {
 			"message": "no products in the shop",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "get all products from this shop success",
-		"data":    all_products,
-	})
+	return c.JSON(http.StatusOK, all_products)
 }
 
-// Get specific product in a shop
+// Get specific product name in a shop
 func GetSpecificProductInShop(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
@@ -45,12 +42,10 @@ func GetSpecificProductInShop(c echo.Context) error {
 			"message": "no product in this shop",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "get product from this shop success",
-		"data":    specific_product,
-	})
+	return c.JSON(http.StatusOK, specific_product)
 }
 
+// Get specific product by id and seller id
 func GetDetailSpecificProduct(c echo.Context) error {
 	seller_id, err := strconv.Atoi(c.Param("seller_id"))
 	if err != nil {
@@ -70,8 +65,23 @@ func GetDetailSpecificProduct(c echo.Context) error {
 			"message": "no product in this shop",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "get product from this shop success",
-		"data":    specific_product,
-	})
+	type Output struct {
+		ID          uint   `json:"id"`
+		Name        string `json:"name"`
+		Stock       int    `json:"stock"`
+		Price       int    `json:"price"`
+		Description string `json:"description"`
+		SellerID    uint   `json:"seller_id"`
+	}
+
+	//set output data
+	output := Output{
+		ID:          specific_product.ID,
+		Name:        specific_product.Name,
+		Stock:       specific_product.Stock,
+		Price:       specific_product.Price,
+		Description: specific_product.Description,
+		SellerID:    specific_product.SellerID,
+	}
+	return c.JSON(http.StatusOK, output)
 }

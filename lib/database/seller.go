@@ -124,10 +124,10 @@ func UpdateSeller(seller models.Seller) (models.Seller, error) {
 	return seller, nil
 }
 
-func GetAllSellerProduct(seller_id int) (interface{}, error) {
+func GetAllSellerProduct(seller_id int) ([]models.Product, error) {
 	var product []models.Product
 	if err := config.DB.Find(&product, "seller_id = ?", seller_id).Error; err != nil {
-		return nil, err
+		return product, err
 	}
 	return product, nil
 }
