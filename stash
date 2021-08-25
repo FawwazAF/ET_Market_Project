@@ -1,8 +1,0 @@
-{{range $index, $elem := .Product}}
-                    <tr>
-                      <td>{{$elem.Name}}</td>
-                      <td>{{$elem.Qty}}</td>
-                      <td>{{$elem.Price}}</td>
-                    </tr>
-                  <tr>
-                  {{end}}
