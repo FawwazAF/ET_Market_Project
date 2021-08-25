@@ -18,10 +18,10 @@ func GetCheckoutStatusInProgress(c echo.Context) error {
 			"message": "request not found",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "request success",
-		"data":    inprogress_checkout,
-	})
+	return c.JSON(http.StatusOK, inprogress_checkout)
+}
+func GetCheckoutStatusTesting() echo.HandlerFunc {
+	return GetCheckoutStatusInProgress
 }
 
 // // Ihsan

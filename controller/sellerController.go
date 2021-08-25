@@ -242,14 +242,9 @@ func GetSellerProducts(c echo.Context) error {
 	// Get data
 	all_products_selected_seller, err := database.GetAllSellerProduct(seller_id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]interface{}{
-			"message": "no products in the shop",
-		})
+		return c.JSON(http.StatusNotFound, err.Error())
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "get all products from this shop success",
-		"data":    all_products_selected_seller,
-	})
+	return c.JSON(http.StatusOK, all_products_selected_seller)
 }
 
 // Ihsan
@@ -263,14 +258,28 @@ func AddProductToSeller(c echo.Context) error {
 	// Add data from request
 	product_added, err := database.AddProductToSeller(product)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "cannot add product",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"data":    product_added,
-	})
+	type Output struct {
+		ID          uint
+		Email       string
+		Name        string
+		Price       int
+		Description string
+		SellerID    uint
+	}
+
+	//set output data
+	output := Output{
+		ID:          product_added.ID,
+		Name:        product_added.Name,
+		Price:       product_added.Price,
+		Description: product_added.Description,
+		SellerID:    product_added.SellerID,
+	}
+	return c.JSON(http.StatusOK, output)
 }
 
 // ihsan
@@ -297,10 +306,24 @@ func EditSellerProduct(c echo.Context) error {
 			"message": "cannot edit product",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"data":    product_edited,
-	})
+	type Output struct {
+		ID          uint
+		Email       string
+		Name        string
+		Price       int
+		Description string
+		SellerID    uint
+	}
+
+	//set output data
+	output := Output{
+		ID:          product_edited.ID,
+		Name:        product_edited.Name,
+		Price:       product_edited.Price,
+		Description: product_edited.Description,
+		SellerID:    product_edited.SellerID,
+	}
+	return c.JSON(http.StatusOK, output)
 }
 
 /*

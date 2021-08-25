@@ -46,7 +46,7 @@ func InitMigrate() {
 
 func ConfigTest() (*gorm.DB, error) {
 	var err error
-	connectionStringTest := "root:welcome12345@tcp(localhost:3306)/etmarket_test?charset=utf8&parseTime=True&loc=Local"
+	connectionStringTest := "root:Minus12345@tcp(localhost:3306)/etmarket_test?charset=utf8&parseTime=True&loc=Local"
 	DB, err = gorm.Open(mysql.Open(connectionStringTest), &gorm.Config{})
 	if err != nil {
 		return DB, err
