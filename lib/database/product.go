@@ -15,7 +15,7 @@ func GetAllProductByShopId(seller_id int) ([]models.Product, error) {
 
 func GetSpecificProductByShopId(seller_id int, product_name string) ([]models.Product, error) {
 	var product []models.Product
-	search := "%" + product_name
+	search := "%" + product_name + "%"
 	if err := config.DB.Find(&product, "seller_id = ? AND name LIKE ?", seller_id, search).Error; err != nil {
 		return nil, err
 	}

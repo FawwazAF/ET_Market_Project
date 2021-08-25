@@ -244,6 +244,11 @@ func GetSellerProducts(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err.Error())
 	}
+	if len(all_products_selected_seller) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "products not found",
+		})
+	}
 	return c.JSON(http.StatusOK, all_products_selected_seller)
 }
 func GetSellerProductTesting() echo.HandlerFunc {

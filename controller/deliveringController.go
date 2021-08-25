@@ -22,6 +22,11 @@ func GetOrderList(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if len(checkout) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "checkout not found",
+		})
+	}
 	return c.JSON(http.StatusOK, checkout)
 }
 func GetOrderListTesting() echo.HandlerFunc {

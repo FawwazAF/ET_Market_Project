@@ -17,27 +17,6 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-var (
-// newDriver = models.Driver{
-// 	Name:     "jojo",
-// 	Email:    "jojo@gmail.com",
-// 	Password: "123",
-// 	Address:  "Jl Bogor Raya",
-// 	Gender:   "m",
-// }
-// newCheckout = models.Checkout{
-// 	TotalQty:   1,
-// 	TotalPrice: 6500,
-// 	Status:     "searching",
-// }
-// newOrder = models.Order{
-// 	Qty:        1,
-// 	Price:      1000,
-// 	Status:     "progress",
-// 	CheckoutID: uint(1),
-// }
-)
-
 func TestGetAllCompletedDeliveries(t *testing.T) {
 	// create database connection
 	db, err := config.ConfigTest()

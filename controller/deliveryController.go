@@ -18,6 +18,11 @@ func GetAllCompletedDeliveriesController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if len(deliveries) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "delivery not found",
+		})
+	}
 	return c.JSON(http.StatusOK, deliveries)
 }
 func GetAllCompletedDeliveriesTesting() echo.HandlerFunc {
