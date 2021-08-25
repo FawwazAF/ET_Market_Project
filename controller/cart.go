@@ -71,7 +71,7 @@ Author: Patmiza
 */
 func DeleteProductInCartsController(c echo.Context) error {
 	//checking product id
-	product_id, err := strconv.Atoi(c.Param("product_id"))
+	cart_id, err := strconv.Atoi(c.Param("cart_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid product id",
@@ -80,7 +80,7 @@ func DeleteProductInCartsController(c echo.Context) error {
 
 	//extracting token of customer id
 	logged_in_customer_id := middlewares.ExtractToken(c)
-	carts, err := database.DeleteProductFromCart(logged_in_customer_id, product_id)
+	carts, err := database.DeleteProductFromCart(logged_in_customer_id, cart_id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

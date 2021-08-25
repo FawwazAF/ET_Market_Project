@@ -93,7 +93,7 @@ func TestInsertProductIntoCart(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
-	context.SetPath("/seller/:seller_id/product/id/:product_id")
+	context.SetPath("/seller/:seller_id/product/:product_id")
 	context.SetParamNames("seller_id", "product_id")
 	context.SetParamValues("1", "1")
 	//Make Checkout
@@ -111,7 +111,7 @@ func TestInsertProductIntoCart(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("POST /seller/:seller_id/product/id/:product_id", func(t *testing.T) {
+	t.Run("POST /seller/:seller_id/product/:product_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, uint(1), response.CustomerID)
 		assert.Equal(t, uint(1), response.ProductID)
@@ -236,13 +236,13 @@ func TestDeleteProductInCart(t *testing.T) {
 	token, _ := middlewares.CreateToken(int(customer.ID))
 	// setting controller
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/", nil)
 	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %v", token))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	res := httptest.NewRecorder()
 	context := e.NewContext(req, res)
-	context.SetPath("/cart/product/:product_id")
-	context.SetParamNames("product_id")
+	context.SetPath("/cart/:cart_id")
+	context.SetParamNames("cart_id")
 	context.SetParamValues("1")
 	//Make Checkout
 	middleware.JWT([]byte(constants.SECRET_JWT))(DeleteProductInCartTesting())(context)
@@ -259,7 +259,7 @@ func TestDeleteProductInCart(t *testing.T) {
 
 	json.Unmarshal([]byte(resBody2), &response)
 
-	t.Run("POST /cart/product/:product_id", func(t *testing.T) {
+	t.Run("DELETE /cart/:cart_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
 		assert.Equal(t, uint(1), response.CustomerID)
 		assert.Equal(t, uint(1), response.ProductID)

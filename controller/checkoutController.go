@@ -116,8 +116,7 @@ func SendEmail(checkout_id uint, customer_id int) {
 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
 	t, _ := template.ParseFiles("template.html")
-
-	var body bytes.Buffer
+	body := bytes.Buffer{}
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body.Write([]byte(fmt.Sprintf("Subject: [E-T Market] Thank you for your purchase \n%s\n\n", mimeHeaders)))
@@ -140,15 +139,16 @@ func SendEmail(checkout_id uint, customer_id int) {
 		show_list = append(show_list, new_array)
 	}
 
-	t.Execute(&body, struct {
-		Name       string
-		TotalPrice int
-		Product    []Result
-	}{
-		Name:       name_customer,
-		TotalPrice: total_price,
-		Product:    show_list,
-	})
+	t.Execute(
+		&body, struct {
+			Name       string
+			TotalPrice int
+			Product    []Result
+		}{
+			Name:       name_customer,
+			TotalPrice: total_price,
+			Product:    show_list,
+		})
 
 	// Sending email.
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())

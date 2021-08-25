@@ -40,6 +40,7 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 		})
 	}
 	type Result struct {
+		ID         uint   `json:"id"`
 		Name       string `json:"name"`
 		MarketID   uint   `json:"market_id"`
 		CategoryID uint   `json:"category_id"`
@@ -48,6 +49,7 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 	var output []Result
 	for i := 0; i < len(all_shop); i++ {
 		new_result := Result{
+			ID:         all_shop[i].ID,
 			Name:       all_shop[i].Name,
 			MarketID:   all_shop[i].MarketID,
 			CategoryID: all_shop[i].CategoryID,

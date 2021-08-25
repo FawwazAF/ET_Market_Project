@@ -68,9 +68,9 @@ func New(e *echo.Echo) {
 	// r.PUT("/driver/:driver_id", controller.UpdateDriver)    //Riska
 
 	//-------------------------Cart----------------------------//
-	r.POST("/seller/:seller_id/product/id/:product_id", controller.InsertProductIntoCartController)
+	r.POST("/seller/:seller_id/product/:product_id", controller.InsertProductIntoCartController)
 	r.GET("/cart", controller.GetAllCartsController)
-	r.DELETE("/cart/product/:product_id", controller.DeleteProductInCartsController)
+	r.DELETE("/cart/:cart_id", controller.DeleteProductInCartsController)
 
 	//--------------------------Checkout--------------------------//
 	r.POST("/checkout", controller.CheckoutTransaction)           //faw
@@ -103,6 +103,6 @@ func New(e *echo.Echo) {
 	r.GET("/driver/history", controller.GetAllCompletedDeliveriesController) //patmiza
 
 	//--------------------------Order--------------------------//
-	r.GET("/driver/orderlist/order", controller.GetAllProgressOrdersController) //patmiza
+	r.GET("/driver/orderlist/orders", controller.GetAllProgressOrdersController) //patmiza
 
 }
