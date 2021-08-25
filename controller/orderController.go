@@ -27,7 +27,7 @@ func GetAllProgressOrdersController(c echo.Context) error {
 	}
 	if len(orders) == 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "products not found",
+			"message": "orders not found",
 		})
 	}
 	return c.JSON(http.StatusOK, orders)

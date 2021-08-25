@@ -20,7 +20,7 @@ func GetAllCompletedDeliveriesController(c echo.Context) error {
 	}
 	if len(deliveries) == 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "products not found",
+			"message": "delivery not found",
 		})
 	}
 	return c.JSON(http.StatusOK, deliveries)
