@@ -19,7 +19,7 @@ jobs:
             git clone git@github.com:FawwazAF/ET_Market_Project.git /home/ubuntu/app
           fi
           cd /home/ubuntu/app/ET_Market_Project
-          git pull origin development
+          git pull origin testing_deploy_2
           docker stop etmContainer
           docker rm etmContainer
           docker build -t et-market:latest .
