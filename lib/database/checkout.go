@@ -8,15 +8,15 @@ import (
 
 func FindCarts(customer_id int) ([]models.Cart, error) {
 	var carts []models.Cart
-	var product []models.Product
+	var product models.Product
 	if err := config.DB.Find(&carts, "customer_id=?", customer_id).Error; err != nil {
 		return carts, err
 	}
-	for i, v := range carts {
+	for _, v := range carts {
 		if err := config.DB.Find(&product, "id=?", v.ProductID).Error; err != nil {
 			return carts, err
 		}
-		if product[i].Stock < v.Qty {
+		if product.Stock < v.Qty {
 			return carts, errors.New("stock is empty")
 		}
 	}

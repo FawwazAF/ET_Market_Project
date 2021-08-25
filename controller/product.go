@@ -36,10 +36,20 @@ func GetSpecificProductInShop(c echo.Context) error {
 	}
 
 	product_name := c.QueryParam("product_name")
+	if product_name == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "bad request",
+		})
+	}
 	specific_product, err := database.GetSpecificProductByShopId(seller_id, product_name)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "no product in this shop",
+		})
+	}
+	if len(specific_product) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "products not found",
 		})
 	}
 	return c.JSON(http.StatusOK, specific_product)

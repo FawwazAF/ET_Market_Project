@@ -25,6 +25,11 @@ func GetAllProgressOrdersController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if len(orders) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "products not found",
+		})
+	}
 	return c.JSON(http.StatusOK, orders)
 }
 func GetOrderDriverTesting() echo.HandlerFunc {

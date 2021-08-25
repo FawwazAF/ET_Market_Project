@@ -18,6 +18,11 @@ func GetCheckoutStatus(c echo.Context) error {
 			"message": "request not found",
 		})
 	}
+	if len(inprogress_checkout) == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "products not found",
+		})
+	}
 	return c.JSON(http.StatusOK, inprogress_checkout)
 }
 func GetCheckoutStatusTesting() echo.HandlerFunc {

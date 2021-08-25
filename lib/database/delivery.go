@@ -61,10 +61,10 @@ func EditDelivery(driver_id, checkout_id int) (models.Delivery, error) {
 /*
 Author: Patmiza
 */
-func GetAllCompletedDeliveries(driver_id int) (interface{}, error) {
+func GetAllCompletedDeliveries(driver_id int) ([]models.Delivery, error) {
 	var deliveries []models.Delivery
 	if err := config.DB.Find(&deliveries, "driver_id=? AND status= ?", driver_id, "completed").Error; err != nil {
-		return nil, err
+		return deliveries, err
 	}
 	return deliveries, nil
 }
