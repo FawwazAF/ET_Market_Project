@@ -10,6 +10,7 @@ func GetAllCategories() ([]models.Category, error) {
 	if err := config.DB.Find(&categories).Error; err != nil {
 		return categories, err
 	}
+
 	return categories, nil
 }
 

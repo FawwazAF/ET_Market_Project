@@ -19,7 +19,21 @@ func GetAllCategories(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, categories)
+	type Result struct {
+		ID   uint   `json:"id"`
+		Name string `json:"name"`
+	}
+
+	var output []Result
+	for i := 0; i < len(categories); i++ {
+		new_result := Result{
+			ID:   categories[i].ID,
+			Name: categories[i].Name,
+		}
+		output = append(output, new_result)
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 /*
@@ -58,27 +72,6 @@ func GetAllCategoriesMarketIdController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, output)
 }
-
-// func GetSellerController(c echo.Context) error {
-// 	market_id, err := strconv.Atoi(c.Param("market_id"))
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-// 			"message": "invalid market id",
-// 		})
-// 	}
-
-// 	category_name := c.Param("category_name")
-// 	list_seller, err := database.GetSellerbyName(market_id, category_name)
-// 	if err != nil {
-// 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-// 			"message": "seller is not found",
-// 		})
-// 	}
-// 	return c.JSON(http.StatusOK, map[string]interface{}{
-// 		"message":     "success to get a seller",
-// 		"list Seller": list_seller,
-// 	})
-// }
 
 /*
 Author: Patmiza
