@@ -25,14 +25,24 @@ func GetAllProgressOrders(driver_id, checkout_id int) (interface{}, error) {
 Author: Riska
 This function for get all products on order table by user login
 */
-func GetAllProductsOrderBySellerId(seller_id int) (interface{}, error) {
-	var results []map[string]interface{}
-	var err error
-	if err = config.DB.Raw("SELECT drivers.name as driver_name, products.name as product_name, orders.qty, orders.price FROM sellers, products, orders, checkouts, deliveries, drivers WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.id = deliveries.checkout_id AND orders.status = 'progress' AND deliveries.driver_id = drivers.id AND sellers.id = ?", seller_id).Scan(&results).Error; err != nil {
-		return nil, err
+type ProductOnSeller struct {
+	DriverName  string
+	ProductName string
+	Qty         int
+	Price       int
+}
+
+func GetAllProductsOrderBySellerId(seller_id int) ([]ProductOnSeller, error) {
+	rows, err := config.DB.Model(&ProductOnSeller{}).Raw("SELECT drivers.name as driver_name, products.name as product_name, orders.qty, orders.price FROM sellers, products, orders, checkouts, deliveries, drivers WHERE sellers.id = products.seller_id AND products.id = orders.product_id AND orders.checkout_id = checkouts.id AND checkouts.id = deliveries.checkout_id AND orders.status = 'progress' AND deliveries.driver_id = drivers.id AND sellers.id = ?", seller_id).Rows()
+
+	defer rows.Close()
+
+	var result []ProductOnSeller
+	for rows.Next() {
+		config.DB.ScanRows(rows, &result)
 	}
 
-	return results, err
+	return result, err
 }
 
 /*

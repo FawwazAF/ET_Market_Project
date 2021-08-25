@@ -55,9 +55,9 @@ func RegisterCustomer(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Name  string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Name  string `json:"name"`
 	}
 
 	//set output data
@@ -95,9 +95,9 @@ func LoginCustomer(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID    uint
-		Email string
-		Token string
+		ID    uint   `json:"id"`
+		Email string `json:"email"`
+		Token string `json:"token"`
 	}
 
 	//set output data
@@ -137,11 +137,11 @@ func GetDetailCustomer(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -154,6 +154,10 @@ func GetDetailCustomer(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func GetDetailCustomerTesting() echo.HandlerFunc {
+	return GetDetailCustomer
 }
 
 /*
@@ -216,11 +220,11 @@ func UpdateCustomer(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -233,6 +237,10 @@ func UpdateCustomer(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func UpdateCustomerTesting() echo.HandlerFunc {
+	return UpdateCustomer
 }
 
 /*
@@ -269,11 +277,11 @@ func LogoutCustomer(c echo.Context) error {
 	}
 
 	type Output struct {
-		ID      uint
-		Email   string
-		Name    string
-		Address string
-		Gender  string
+		ID      uint   `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Address string `json:"address"`
+		Gender  string `json:"gender"`
 	}
 
 	//set output data
@@ -286,4 +294,8 @@ func LogoutCustomer(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, output)
+}
+
+func LogoutCustomerTesting() echo.HandlerFunc {
+	return LogoutCustomer
 }
