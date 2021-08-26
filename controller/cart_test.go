@@ -55,36 +55,36 @@ func TestInsertProductIntoCart(t *testing.T) {
 
 	// preparate dummy data
 	//Product dummy
-	newProduct := models.Product{
+	new_product := models.Product{
 		Name:        "bawang",
 		Price:       3000,
 		Stock:       20,
 		Description: "unit per ons",
 		SellerID:    uint(1),
 	}
-	if err := db.Save(&newProduct).Error; err != nil {
+	if err := db.Save(&new_product).Error; err != nil {
 		t.Error(err)
 	}
 	//Customer dummy
-	newCustomer := models.Customer{
+	new_customer := models.Customer{
 		Name:     "jojo",
 		Email:    "jojo@gmail.com",
 		Password: "123",
 		Address:  "Jl Bogor Raya",
 		Gender:   "m",
 	}
-	if err := db.Save(&newCustomer).Error; err != nil {
+	if err := db.Save(&new_customer).Error; err != nil {
 		t.Error(err)
 	}
 	//Make Token
 	var customer models.Customer
-	if err := config.DB.Where("email = ?", newCustomer.Email).First(&customer).Error; err != nil {
+	if err := config.DB.Where("email = ?", new_customer.Email).First(&customer).Error; err != nil {
 		t.Error(err)
 	}
-	reqBody := models.Cart{
+	req_body := models.Cart{
 		Qty: 2,
 	}
-	body, _ := json.Marshal(reqBody)
+	body, _ := json.Marshal(req_body)
 	token, _ := middlewares.CreateToken(int(customer.ID))
 	// setting controller
 	e := echo.New()
@@ -107,9 +107,9 @@ func TestInsertProductIntoCart(t *testing.T) {
 	}
 
 	var response Response
-	resBody2 := res.Body.String()
+	req_body2 := res.Body.String()
 
-	json.Unmarshal([]byte(resBody2), &response)
+	json.Unmarshal([]byte(req_body2), &response)
 
 	t.Run("POST /seller/:seller_id/product/:product_id", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
@@ -134,29 +134,29 @@ func TestGetCart(t *testing.T) {
 
 	// preparate dummy data
 	//Cart dummy
-	newCart := models.Cart{
+	new_cart := models.Cart{
 		CustomerID: 1,
 		ProductID:  1,
 		Qty:        2,
 		Price:      20000,
 	}
-	if err := db.Save(&newCart).Error; err != nil {
+	if err := db.Save(&new_cart).Error; err != nil {
 		t.Error(err)
 	}
 	//Customer dummy
-	newCustomer := models.Customer{
+	new_customer := models.Customer{
 		Name:     "jojo",
 		Email:    "jojo@gmail.com",
 		Password: "123",
 		Address:  "Jl Bogor Raya",
 		Gender:   "m",
 	}
-	if err := db.Save(&newCustomer).Error; err != nil {
+	if err := db.Save(&new_customer).Error; err != nil {
 		t.Error(err)
 	}
 	//Make Token
 	var customer models.Customer
-	if err := config.DB.Where("email = ?", newCustomer.Email).First(&customer).Error; err != nil {
+	if err := config.DB.Where("email = ?", new_customer.Email).First(&customer).Error; err != nil {
 		t.Error(err)
 	}
 
@@ -181,9 +181,9 @@ func TestGetCart(t *testing.T) {
 	}
 
 	var response []Response
-	resBody2 := res.Body.String()
+	req_body2 := res.Body.String()
 
-	json.Unmarshal([]byte(resBody2), &response)
+	json.Unmarshal([]byte(req_body2), &response)
 
 	t.Run("GET /cart", func(t *testing.T) {
 		assert.Equal(t, 200, res.Code)
@@ -218,19 +218,19 @@ func TestDeleteProductInCart(t *testing.T) {
 		t.Error(err)
 	}
 	//Customer dummy
-	newCustomer := models.Customer{
+	new_customer := models.Customer{
 		Name:     "jojo",
 		Email:    "jojo@gmail.com",
 		Password: "123",
 		Address:  "Jl Bogor Raya",
 		Gender:   "m",
 	}
-	if err := db.Save(&newCustomer).Error; err != nil {
+	if err := db.Save(&new_customer).Error; err != nil {
 		t.Error(err)
 	}
 	//Make Token
 	var customer models.Customer
-	if err := config.DB.Where("email = ?", newCustomer.Email).First(&customer).Error; err != nil {
+	if err := config.DB.Where("email = ?", new_customer.Email).First(&customer).Error; err != nil {
 		t.Error(err)
 	}
 	token, _ := middlewares.CreateToken(int(customer.ID))
