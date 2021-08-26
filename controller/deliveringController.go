@@ -27,7 +27,25 @@ func GetOrderList(c echo.Context) error {
 			"message": "checkout not found",
 		})
 	}
-	return c.JSON(http.StatusOK, checkout)
+	type Response struct {
+		ID         uint   `json :"id"`
+		CustomerID uint   `json:"customer_id"`
+		TotalQty   int    `json:"total_qty"`
+		TotalPrice int    `json:"total_price"`
+		Status     string `json:"status" gorm:"type:enum('searching', 'delivery', 'completed')"`
+	}
+	var responses []Response
+	for i := 0; i < len(checkout); i++ {
+		new_array := Response{
+			ID:         checkout[i].ID,
+			CustomerID: checkout[i].CustomerID,
+			TotalQty:   checkout[i].TotalQty,
+			TotalPrice: checkout[i].TotalPrice,
+			Status:     checkout[i].Status,
+		}
+		responses = append(responses, new_array)
+	}
+	return c.JSON(http.StatusOK, responses)
 }
 func GetOrderListTesting() echo.HandlerFunc {
 	return GetOrderList
