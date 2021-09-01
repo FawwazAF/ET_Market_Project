@@ -26,4 +26,4 @@ jobs:
           docker stop etmContainer
           docker rm etmContainer
           docker build -t et-market:latest .
-          docker run -d --name etmContainer -p 80:80 -e "HTTP_PORT=80" -e "CONNECTION_STRING=root:12345678@tcp(13.250.48.38:3306)/etmarket_schema?charset=utf8&parseTime=True&loc=Local" et-market:latest
+          docker run -d --name etmContainer -p 80:80 -e "HTTP_PORT=80" -e "CONNECTION_STRING=root:12345678@tcp(54.169.249.15:3306)/etmarket_schema?charset=utf8&parseTime=True&loc=Local" et-market:latest
